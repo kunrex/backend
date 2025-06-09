@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="/pages/order/styles.css"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container px-5">
+            <a class="navbar-brand">Backend.Food</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link">Order: <%= orderId %></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-row justify-content-evenly align-items-center p-5">
+        <div class="card w-50 me-4 h-100">
+            <div class="card-body h-100 d-flex flex-column justify-content-start">
+                <h3>Menu</h3>
+                <hr>
+                <div id="tags-parent" class="overflow-x-scroll h-auto w-100 no-wrap p-2">
+                    <button type="button" class="btn btn-primary" data-tag="all">All</button>
+                    <% for(let i = 0; i < tags.length; i++) { %>
+                        <button type="button" class="btn btn-secondary" data-tag="<%= tags[i] %>"> <%= tags[i].split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') %> </button>
+                    <% } %>
+                </div>
+                <div id="menu-parent" class="d-flex flex-column justify-content-start align-items-center overflow-y-scroll no-wrap p-3">
+                    <% for(let i = 0; i < menu.length; i++) { %>
+                        <% const current = menu[i] %>
+                        <div class="card w-100 mt-3 mb-3">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <img src="/<%= current.image %>" class="rounded-start-2 menu-card-img" alt="Img">
+                                </div>
+                                <div class="col w-50">
+                                    <div class="card-body">
+                                        <h3 class="card-title"><%= current.name %></h3>
+                                        <div class="mt-3 overflow-x-scroll no-wrap">
+                                            <p class="card-text"><strong>Time:</strong> <%= current.cookTime %>; <strong>Description:</strong> <%= current.description %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto d-flex flex-column justify-content-evenly align-items-center me-2">
+                                    <h6>₹<%= current.price %></h6>
+                                    <% if (current.veg) { %>
+                                        <span class="dot green"></span>
+                                    <% } else { %>
+                                        <span class="dot red"></span>
+                                    <% } %>
+                                    <button type="button" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="card w-50 me-4 h-100">
+            <div class="card-body h-100 d-flex flex-column justify-content-start">
+                <h3>Order Details</h3>
+                <hr>
+                <div id="orders-parent" class="d-flex flex-column justify-content-start align-items-center overflow-y-scroll h-100 no-wrap p-3">
+                    <% for(let i = 0; i < orders.length; i++) { %>
+                        <% const current = orders[i] %>
+                        <div class="card w-100 mt-3 mb-3">
+                            <div class="row">
+                                <div class="col d-flex flex-column justify-content-evenly align-items-baseline">
+                                    <div class="card-body w-100">
+                                        <h3 class="card-title m-0"><%= current.name %></h3>
+                                        <div class="w-100 p-0 d-flex justify-content-evenly align-items-center">
+                                            <div class="mt-3 w-25 overflow-x-scroll no-wrap">
+                                                <p class="card-text">Added by: <%= current.addedBy %></p>
+                                            </div>
+                                            <input type="text" name="instructions" class="ms-3 w-75 form-control" id="pwd" placeholder="Instructions" maxlength="300">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto d-flex flex-column justify-content-center align-items-center me-2">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <i class="bi bi-plus-lg m-1 icon-button"></i>
+                                        <h6 class="m-1"><%= current.quantity %></h6>
+                                        <i class="bi bi-dash-lg m-1 icon-button"></i>
+                                    </div>
+                                    <div>
+                                        <% if (current.state === 'ordered') { %>
+                                            <i class="bi bi-list-ul fs-4 text-dark"></i>
+                                        <% } else if(current.state === 'processing') { %>
+                                            <i class="bi bi-hourglass-split fs-4 text-warning"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-clipboard2-check-fill fs-4 text-success"></i>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+                <div class="w-100 d-flex justify-content-evenly">
+                    <button id="confirm" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Confirm</button>
+                    <button id="complete" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Complete</button>
+                    <button id="pay" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const orderId = <%- orderId %>
+
+        const tags = <%- JSON.stringify(tags) %>
+
+        const menu = <%- JSON.stringify(menu) %>
+        const orders = <%- JSON.stringify(orders) %>
+
+        const tagChildren = document.getElementById('tags-parent').children
+        const menuChildren = document.getElementById('menu-parent').children
+
+        const payButton = document.getElementById('pay')
+        const completeButton = document.getElementById('complete')
+
+        const ordersParent = document.getElementById('orders-parent')
+    </script>
+    <script>
+        tagChildren[0].onclick = () => {
+            filter(tagChildren[0], 'all')
+        }
+
+        for(let i = 0; i < tags.length; i++) {
+            const current = tagChildren[i + 1]
+
+            current.onclick = () => {
+                filter(current, current.dataset.tag)
+            }
+        }
+
+        function filter(button, tag) {
+            tag = tag.toLowerCase()
+
+            for(let i = 0; i < tagChildren.length; i++)
+                tagChildren[i].className = 'btn btn-secondary'
+
+            button.className = 'btn btn-primary'
+
+            function enableChild(child) {
+                child.style.margin = ''
+                child.style.display = 'block'
+            }
+
+            function disableChild(child) {
+                child.style.margin = '0'
+                child.style.display = 'none'
+            }
+
+            if (tag === 'all')
+            {
+                for(let i = 0; i < menuChildren.length; i++)
+                    enableChild(menuChildren[i])
+
+                return
+            }
+
+            for(let i = 0; i < menuChildren.length; i++)
+                if(menu[i].tags.includes(tag))
+                    enableChild(menuChildren[i])
+                else
+                    disableChild(menuChildren[i])
+        }
+    </script>
+    <script>
+        function createCard(name) {
+            const card = document.createElement("div")
+            card.className = "card w-100 mt-3 mb-3"
+
+            const row = document.createElement("div")
+            row.className = "row"
+            card.appendChild(row)
+
+            const colLeft = document.createElement("div")
+            colLeft.className = "col d-flex flex-column justify-content-evenly align-items-baseline"
+
+            const cardBody = document.createElement("div")
+            cardBody.className = "card-body w-100"
+
+            const title = document.createElement("h3")
+            title.className = "card-title m-0"
+            title.textContent = name
+
+            const contentRow = document.createElement("div")
+            contentRow.className = "w-100 p-0 d-flex justify-content-evenly align-items-center"
+
+            const addedByDiv = document.createElement("div")
+            addedByDiv.className = "mt-3 w-25 overflow-x-scroll no-wrap"
+
+            const addedByText = document.createElement("p")
+            addedByText.className = "card-text"
+            addedByText.textContent = `Added by you!`
+            addedByDiv.appendChild(addedByText)
+
+            const input = document.createElement("input")
+            input.type = "text"
+            input.name = "instructions"
+            input.className = "ms-3 w-75 form-control"
+            input.id = "pwd"
+            input.placeholder = "Instructions"
+            input.maxLength = 300
+
+            contentRow.appendChild(addedByDiv)
+            contentRow.appendChild(input)
+
+            cardBody.appendChild(title)
+            cardBody.appendChild(contentRow)
+            colLeft.appendChild(cardBody)
+
+            const colRight = document.createElement("div")
+            colRight.className = "col-auto d-flex flex-column justify-content-center align-items-center me-2"
+
+            const quantityRow = document.createElement("div")
+            quantityRow.className = "d-flex justify-content-center align-items-center"
+
+            const plusIcon = document.createElement("i")
+            plusIcon.className = "bi bi-plus-lg m-1"
+
+            const quantity = document.createElement("h6")
+            quantity.className = "m-1"
+            quantity.textContent = '1'
+
+            const minusIcon = document.createElement("i")
+            minusIcon.className = "bi bi-dash-lg m-1"
+
+            quantityRow.appendChild(plusIcon);
+            quantityRow.appendChild(quantity);
+            quantityRow.appendChild(minusIcon);
+
+            const stateIcon = document.createElement("div")
+            const icon = document.createElement("i")
+            icon.className = "bi bi-list-ul fs-4 text-dark"
+            stateIcon.appendChild(icon)
+
+            colRight.appendChild(quantityRow)
+            colRight.appendChild(stateIcon)
+
+            row.appendChild(colLeft)
+            row.appendChild(colRight)
+
+            return [card, quantity, minusIcon, plusIcon, input]
+        }
+
+        function addItem(index) {
+            const item = menu[index]
+
+            payButton.disabled = true
+            completeButton.disabled = true
+
+            for (let i = 0; i < orders.length; i++) {
+                const current = orders[i]
+                console.log(current)
+                if (current.foodId === item.id && current.status === 'ordered') {
+                    incrementOrder(current)
+                    return
+                }
+            }
+
+            const order = {
+                foodId: item.id,
+                quantity: 1,
+                instructions: '',
+                status: 'ordered',
+                state: 2
+            }
+
+            const result = createCard(item.name)
+            ordersParent.appendChild(result[0])
+
+            order.quantityText = result[1]
+
+            order.decreaseButton = result[2]
+            order.decreaseButton.onclick = () => {
+                decrementOrder(order)
+            }
+
+            order.increasedButton = result[3]
+            order.increasedButton.onclick = () => {
+                incrementOrder(order)
+            }
+
+            result[4].onchange = (e) => {
+                order.instruction = e.target.value
+                order.status = 1
+            }
+
+            orders[orders.length] = order
+        }
+
+        function incrementOrder(order) {
+            if(order.state < 1)
+                order.state = 1
+
+            order.quantity += 1
+            order.quantityText.style.color = 'black'
+            order.decreaseButton.dataset.status = 'true'
+            order.quantityText.innerHTML = order.quantity.toString()
+        }
+
+        function decrementOrder(order) {
+            if(order.decreaseButton.dataset.status === 'false')
+                return
+
+            if(order.state < 1)
+                order.state = 1
+
+            order.quantity -= 1
+
+            if(order.quantity === 0)
+            {
+                order.quantityText.style.color = 'red'
+                order.decreaseButton.dataset.status = 'false'
+            }
+
+            order.quantityText.innerHTML = order.quantity.toString()
+        }
+
+        function isComplete() {
+            for(let i = 0; i < orders.length; i++)
+                if(orders[i].status !== 'completed')
+                    return false
+
+            return true
+        }
+
+        async function commit() {
+            for(let i = 0; i < orders.length; i++) {
+                const order = orders[i]
+
+                switch(order.status) {
+                    case 1:
+                        if(order.quantity > 0)
+                            await fetch(`/suborder/update/${order.id}/${order.quantity}/${order.instructions}`, {
+                                method: 'POST'
+                            })
+                        else
+                            await fetch(`/suborder/remove/${order.id}`, {
+                                method: 'POST'
+                            })
+                        break
+                    case 2:
+                        if(order.quantity > 0)
+                            await fetch(`/suborder/add/${orderId}/${order.foodId}/${order.quantity}/${order.instructions}`, {
+                                method: 'POST'
+                            })
+                        break
+                }
+            }
+        }
+
+        function setup() {
+            for(let i = 0; i < menuChildren.length; i++) {
+                menuChildren[i].querySelector('button').onclick = () => {
+                    addItem(i)
+                }
+            }
+
+            const ordersChildren = ordersParent.children
+            for(let i = 0; i < ordersChildren.length; i++) {
+                const order = orders[i]
+                const htmlElement = ordersChildren[i]
+
+                const input = htmlElement.querySelector('input')
+                const quantityText = htmlElement.querySelector('h6')
+                const buttons = htmlElement.querySelectorAll('i')
+
+                if(order.status === 'ordered') {
+                    buttons[0].onclick = () => {
+                        decrementOrder(order)
+                    }
+
+                    buttons[1].onclick = () => {
+                        incrementOrder(order)
+                    }
+
+                    order.quantityText = quantityText
+                    order.decreaseButton = buttons[0]
+
+                    input.onchange = (e) => {
+                        order.instruction = e.target.value
+                        order.status = 1
+                    }
+
+                    payButton.disabled = true
+                    completeButton.disabled = true
+
+                    buttons[0].dataset.status = 'true'
+                    buttons[1].dataset.status = 'true'
+
+                    order.state = 0
+                }
+                else {
+                    input.readOnly = true
+                    input.value = order.instruction
+
+                    buttons[0].dataset.status = 'false'
+                    buttons[1].dataset.status = 'false'
+
+                    order.state = 3
+                }
+            }
+
+            document.getElementById('confirm').onclick = async () => {
+                await commit()
+                await fetch('dashboard')
+            }
+
+            completeButton.onclick = async () => {
+                if(!isComplete())
+                    return
+
+                await fetch(`/order/complete/${orderId}`)
+                await fetch('dashboard')
+            }
+
+            payButton.onclick = async () => {
+                if(!isComplete())
+                    return
+
+                await fetch('dashboard')
+            }
+        }
+    </script>
+    <script>
+        if(<%- completed %>) {
+            document.getElementById('confirm').onclick = async () => {
+                await fetch('dashboard')
+            }
+
+            completeButton.disabled = true
+            payButton.disabled = true
+        }
+        else
+            setup()
+    </script>
+</body>
+</html>

@@ -5,6 +5,18 @@ import { between, access, refresh, return400Response, supportsJson, return40XRes
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+export function loginPageHandler(req, res) {
+    return res.render('login', {
+        error: undefined
+    })
+}
+
+export function loginPageErrorHandler(req, res) {
+    return res.render('login', {
+        error: req.params.error
+    })
+}
+
 function checks(req, res, body) {
     if(!body.name)
         return return400Response(req, res, 'Name cannot be empty')

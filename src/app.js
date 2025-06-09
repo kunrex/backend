@@ -4,10 +4,22 @@ import path from 'path'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-import { auth } from "./middleware/auth.js";
-import { authorise } from "./services/utils.js";
-import {accessRefreshHandler} from "./handlers/auth.js";
+import { authMiddleware } from "./middleware/authMiddleware.js";
+import {authorise, return400Response} from "./services/utils.js";
+import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler} from "./handlers/auth.js";
 import {dashboardHandler} from "./handlers/dashboard.js";
+import {
+    getTagsHandler,
+    newOrderHandler,
+    renderOrderHandler,
+    getMenuHandler,
+    addSuborderHandler,
+    updateSuborderHandler,
+    removeSuborderHandler,
+    completeOrderHandler,
+    payForOrderHandler,
+    renderAllOrdersHandler
+} from "./handlers/orders.js";
 
 const __dirname = import.meta.dirname;
 
@@ -23,16 +35,32 @@ app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/d
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'pages'))
 
-app.post('/auth', auth)
+app.get('/login', loginPageHandler)
+app.get('/login/:error', loginPageErrorHandler)
+
+app.post('/auth', authMiddleware)
 app.get('/auth/refresh', accessRefreshHandler)
 
-app.get('/login', (req, res) => {
-    res.render('login', {
-        error: req.query === undefined ? undefined : req.query.error
-    })
-})
-
 app.get('/dashboard', authorise, dashboardHandler)
+
+app.get('/order', authorise, newOrderHandler)
+app.get('/order/:orderId', authorise, renderOrderHandler)
+
+app.get('/tags', getTagsHandler)
+app.get('/menu', getMenuHandler)
+
+app.post('/suborder/remove/:suborderId', authorise, removeSuborderHandler)
+app.post('/suborder/add/:orderId/:foodId/:quantity/:instructions', authorise, addSuborderHandler)
+app.post('/suborder/update/:suborderId/:quantity/:instructions', authorise, updateSuborderHandler)
+
+app.post('/order/pay/:orderId', authorise, payForOrderHandler)
+app.post('/order/complete/:orderId', authorise, completeOrderHandler)
+
+app.get('/orders/', authorise, renderAllOrdersHandler)
+
+app.use((req, res) => {
+    return return400Response(req, res, 'Bad Request')
+})
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

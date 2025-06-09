@@ -23,13 +23,14 @@ CREATE TABLE Foods (
     veg BOOLEAN NOT NULL,
     cookTime TIME NOT NULL,
     price INT UNSIGNED NOT NULL
+
+    image VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE FoodTags (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
 
     name VARCHAR(50) UNIQUE NOT NULL,
-    colour CHAR(6) NOT NULL
 );
 
 CREATE TABLE FoodTagRelations (

@@ -1,0 +1,36 @@
+.mt-6 {
+    margin-top: 5rem;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+#tags-parent {
+    min-height: 5rem;
+}
+
+.menu-card-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover
+}
+
+.dot {
+    width: 16px;
+    height: 16px;
+
+    margin: 0;
+    padding: 0;
+
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: lightgreen;
+}

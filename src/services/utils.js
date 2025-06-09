@@ -5,7 +5,7 @@ export const access = 'awt'
 export const refresh = 'rwt'
 
 export function now() {
-    return `'${new Date().toISOString().slice(0, 19).replace('T', ' ')}'`
+    return new Date().toISOString().slice(0, 19).replace('T', ' ')
 }
 
 export function between(val, min, max) {
@@ -13,7 +13,11 @@ export function between(val, min, max) {
 }
 
 export function supportsJson(req) {
-    return req.header('Accept').includes('application/json')
+    const header = req.header('Accept')
+    if(header !== undefined)
+        return header.includes('application/json')
+
+    return false
 }
 
 export function return40XResponse(code, req, res, error) {
@@ -23,7 +27,7 @@ export function return40XResponse(code, req, res, error) {
             error: error
         })
 
-    return res.redirect(`login?error=${error}`)
+    return res.redirect(`/login/${error}`)
 }
 
 export function return400Response(req, res, error) {
@@ -55,9 +59,7 @@ async function authoriseCookies(req, res, next) {
 
     const accessPayload = verifyToken(accessCookie)
     if(accessPayload == null)
-    {
-        return res.redirect('auth/refresh')
-    }
+        return res.redirect('/auth/refresh')
 
     const result = await runDBCommand(`SELECT * FROM ${users} WHERE email = ${escape(accessPayload.email)};`)
     if(result.length !== 1)

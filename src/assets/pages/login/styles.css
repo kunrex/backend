@@ -41,3 +41,15 @@ header.masthead {
 .bobble-effect-8 {
     animation: bobble 8s infinite;
 }
+
+.icon-button[data-status='true'] {
+    color: black;
+}
+
+.icon-button[data-status='true']:hover {
+    cursor: pointer;
+}
+
+.icon-button[data-status='false'] {
+    color: gray;
+}
