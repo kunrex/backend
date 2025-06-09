@@ -2,75 +2,80 @@ CREATE DATABASE backend
 
 USE backend
 
--- For tag in users, first bit is admin perms, second is chef perms and third is customer perms
-
 CREATE TABLE Users (
-    ID BIGINT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    Email VARCHAR(255) UNIQUE NOT NULL,
-    PwdHash CHAR(60) NOT NULL,
-    Tag TINYINT UNSIGNED NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+
+    pwdHash CHAR(60) NOT NULL,
+    refreshHash CHAR(60),
+
+    auth TINYINT UNSIGNED NOT NULL
 );
 
 CREATE TABLE Foods (
-    ID BIGINT PRIMARY KEY,
-    Name VARCHAR(100) UNIQUE NOT NULL,
-    Description VARCHAR(300) NOT NULL,
-    CookTime TIME NOT NULL,
-    Veg BOOLEAN NOT NULL,
-    Price INT UNSIGNED NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description VARCHAR(300) NOT NULL,
+
+    veg BOOLEAN NOT NULL,
+    cookTime TIME NOT NULL,
+    price INT UNSIGNED NOT NULL
 );
 
 CREATE TABLE FoodTags (
-    ID BIGINT PRIMARY KEY,
-    Name VARCHAR(50) UNIQUE NOT NULL,
-    Colour CHAR(6) NOT NULL
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+    name VARCHAR(50) UNIQUE NOT NULL,
+    colour CHAR(6) NOT NULL
 );
 
-CREATE TABLE FoodTagRels (
-    FoodID BIGINT NOT NULL,
-    TagTD BIGINT NOT NULL,
+CREATE TABLE FoodTagRelations (
+    foodId BIGINT NOT NULL,
+    tagId BIGINT NOT NULL,
 
-    FOREIGN KEY (FoodID) REFERENCES Foods(ID),
-    FOREIGN KEY (TagTD) REFERENCES FoodTags(ID)
+    FOREIGN KEY (foodId) REFERENCES Foods(id),
+    FOREIGN KEY (tagId) REFERENCES FoodTags(id)
 );
 
 CREATE TABLE Orders (
-    ID BIGINT PRIMARY KEY,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
 
-    CreatedBy BIGINT NOT NULL,
-    PayedBy BIGINT,
+    createdBy BIGINT NOT NULL,
+    payedBy BIGINT,
 
-    Status ENUM ('ordered', 'processing', 'completed') NOT NULL,
+    status ENUM ('ordered', 'processing', 'completed') NOT NULL,
 
-    CreatedOn DATETIME NOT NULL,
-    CompletedOn DATETIME,
+    createdOn DATETIME NOT NULL,
+    completedOn DATETIME,
 
-    Subtotal FLOAT(2),
-    Discount INT,
-    Tip INT,
-    Total FLOAT(2),
+    subtotal FLOAT,
+    discount INT,
+    tip INT,
+    total FLOAT,
 
-    PayedOn DATETIME,
+    payedOn DATETIME,
 
-    FOREIGN KEY (CreatedBy) REFERENCES Users(ID),
-    FOREIGN KEY (PayedBy) REFERENCES Users(ID)
+    FOREIGN KEY (createdBy) REFERENCES Users(id),
+    FOREIGN KEY (payedBy) REFERENCES Users(id)
 );
 
 CREATE TABLE Suborders (
-    ID BIGINT PRIMARY KEY,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
 
-    FoodId BIGINT NOT NULL,
-    OrderID BIGINT NOT NULL,
-    AddedBy BIGINT NOT NULL,
+    foodId BIGINT NOT NULL,
+    orderId BIGINT NOT NULL,
+    authorId BIGINT NOT NULL,
 
-    Quantity INT NOT NULL,
+    quantity INT NOT NULL,
 
-    Instructions VARCHAR(300),
+    instructions VARCHAR(300),
 
-    Status ENUM ('ordered', 'processing', 'completed') NOT NULL,
+    status ENUM ('ordered', 'processing', 'completed') NOT NULL,
 
-    FOREIGN KEY (FoodId) REFERENCES Foods(ID),
-    FOREIGN KEY (OrderID) REFERENCES Orders(ID),
-    FOREIGN KEY (AddedBy) REFERENCES Users(ID)
+    FOREIGN KEY (foodId) REFERENCES Foods(id),
+    FOREIGN KEY (orderId) REFERENCES Orders(id),
+    FOREIGN KEY (authorId) REFERENCES Users(id)
 );

@@ -1,0 +1,43 @@
+header.masthead {
+    height: 100vh;
+}
+
+.container-sm {
+    max-width: 800px;
+}
+
+#scroll {
+    height: 100vh;
+    background-color: red;
+}
+
+@keyframes bobble {
+    0% {
+        transform: translateY(10px);
+    }
+    50% {
+        transform: translateY(40px);
+    }
+    100% {
+        transform: translateY(10px);
+    }
+}
+
+.bobble-effect-10 {
+    animation: bobble 10s infinite;
+}
+
+
+.bobble-effect-4 {
+    animation: bobble 4s infinite;
+}
+
+
+.bobble-effect-6 {
+    animation: bobble 6s infinite;
+}
+
+
+.bobble-effect-8 {
+    animation: bobble 8s infinite;
+}

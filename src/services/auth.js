@@ -1,7 +1,10 @@
-const jwt = require('jsonwebtoken')
+import jwt from 'jsonwebtoken'
+
 const secret = process.env.JWT_SECRET
 
-const accessRefresh = { expiresIn: '1800s' }
+export const accessRefreshTime = '1800s'
+
+const accessRefresh = { expiresIn: accessRefreshTime }
 const refreshRefresh = { expiresIn: '7d' }
 
 export function genAccessToken(user) {

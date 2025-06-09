@@ -1,35 +1,38 @@
-const path = require("node:path");
-const express = require('express')
+import './env-load.js'
 
-require('dotenv').config()
+import path from 'path'
+import express from 'express'
+import cookieParser from 'cookie-parser'
+
+import { auth } from "./middleware/auth.js";
+import { authorise } from "./services/utils.js";
+import {accessRefreshHandler} from "./handlers/auth.js";
+import {dashboardHandler} from "./handlers/dashboard.js";
+
+const __dirname = import.meta.dirname;
 
 const app = express()
 const port = parseInt(process.env.APP_PORT)
 
-app.use(express.static(path.join(__dirname, 'assets')));
-app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')));
+app.use(cookieParser())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, 'assets')))
+app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
 
 app.set('view engine', 'ejs')
-app.set('views', path.join(__dirname, 'pages'));
+app.set('views', path.join(__dirname, 'pages'))
 
-const db = require("services/db")
-const auth = require("services/auth")
-const hash = require("services/hash")
+app.post('/auth', auth)
+app.get('/auth/refresh', accessRefreshHandler)
 
-app.use((req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-
-    if (token == null)
-        return res.sendStatus(401)
-
-    const result = auth.verifyToken(token)
-    if (result == null)
-        return res.sendStatus(403)
-
-    req.user = result
-    next()
+app.get('/login', (req, res) => {
+    res.render('login', {
+        error: req.query === undefined ? undefined : req.query.error
+    })
 })
+
+app.get('/dashboard', authorise, dashboardHandler)
 
 app.use((err, req, res, next) => {
     console.error(err.stack)

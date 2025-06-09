@@ -1,10 +1,11 @@
-const bcrypt = require('bcrypt')
+import { hash as bcryptHash, compare as bcryptCompare } from 'bcrypt'
+
 const saltRounds = parseInt(process.env.SALT_ROUNDS)
 
-export function hash(pwd) {
-    return bcrypt.hash(pwd, saltRounds)
+export async function hash(pwd) {
+    return await bcryptHash(pwd, saltRounds)
 }
 
-export function compare(pwd, hash) {
-    return bcrypt.compare(pwd, hash)
+export async function compare(pwd, hash) {
+    return await bcryptCompare(pwd, hash)
 }
