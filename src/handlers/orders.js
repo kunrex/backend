@@ -6,7 +6,7 @@ import {
     foods,
     foodTagRelations,
     suborders,
-    ordered, completed, users
+    ordered, completed, users, processing
 } from "../services/db.js";
 import {between, now, return400Response, supportsJson} from "../services/utils.js";
 
@@ -48,26 +48,30 @@ export async function addFood(foodId) {
 export async function renderOrderHandler(req, res) {
     const orderId = parseInt(req.params.orderId)
 
-    const orders = await runDBCommand(`SELECT ${suborders}.*, ${foods}.name FROM ${suborders} 
+    const allSuborders = await runDBCommand(`SELECT ${suborders}.*, ${foods}.name, ${users}.name AS authorName FROM ${suborders} 
                                             INNER JOIN ${foods} ON ${suborders}.foodId = ${foods}.id
+                                            INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
 
     if(supportsJson(req))
         return res.status(200).send({
             code: 200,
-            orders: orders
+            orders: allSuborders
         })
 
     const tagValues = []
     for(let i = 0; i < tags.length; i++)
         tagValues.push(tags[i].name)
 
+    const order = (await runDBCommand(`SELECT * FROM ${orders} WHERE id = ${orderId};`))[0]
+
     return res.render('order', {
         menu: menu,
-        orders: orders,
+        orders: allSuborders,
         tags: tagValues,
         orderId: orderId,
-        completed: (await runDBCommand(`SELECT * FROM ${orders} WHERE id = ${orderId}`)).status === 'completed'
+        completed: order.status === 'completed',
+        payed: order.payedBy != null
     })
 }
 
@@ -89,115 +93,224 @@ export function getMenuHandler(req, res) {
     })
 }
 
-export async function addSuborderHandler(req, res) {
-    const user = req.user
-    const params = req.params
-
-    const instructions = params.instructions
-    const foodId = parseInt(params.foodId)
-    const orderId = parseInt(params.orderId)
-    const quantity = parseInt(params.quantity)
-
-    if(orderId === undefined)
-        return return400Response(req, res, 'Bad Request')
-
-    if((await runDBCommand(`SELECT 1 FROM ${foods} WHERE id = ${escape(foodId)}`)).length === 0)
-        return return400Response(req, res, 'Bad Request: Invalid FoodID')
+async function tryAddSuborder(userId, orderId, suborder) {
+    const foodId = suborder.foodId
+    const quantity = suborder.quantity
+    const instructions = suborder.instructions
 
     if(!between(quantity, 0, Number.MAX_VALUE))
-        return return400Response(req, res, 'Bad Request: Invalid quantity')
+        return null
 
-    if(!between(instructions.length, 1, 300))
-        return return400Response(req, res, 'Bad Request: Invalid Instruction')
+    if(!between(instructions.length, 0, 300))
+        return null
 
-    await runDBCommand(`INSERT INTO ${suborders} (foodId, orderId, authorId, quantity, instructions, status) VALUES (
-        ${escape(foodId)},
-        ${escape(orderId)},
-        ${escape(user.id)},
-        ${escape(quantity)},
-        ${escape(instructions)},
-        ${escape(ordered)}
-    );`)
+    if((await runDBCommand(`SELECT 1 FROM ${foods} WHERE id = ${escape(foodId)};`)).length === 0)
+        return null
 
-    return res.sendStatus(200)
+    return `(${escape(foodId)}, ${escape(orderId)}, ${escape(userId)}, ${escape(quantity)}, ${escape(instructions)}, ${escape(ordered)})`
 }
 
-export async function removeSuborderHandler(req, res) {
-    const suborderId = parseInt(req.params.suborderId)
-
+async function tryRemoveSuborder(suborderId) {
     const rows = await runDBCommand(`SELECT status from ${suborders} where id = ${suborderId};`)
     if(rows.length === 0)
-        return return400Response(req, res, 'Bad Request: No such suborder')
+        return
 
     const suborder = rows[0]
     if(suborder.status !== ordered)
-        return return400Response(req, res, 'Bad Request: Can only remove orders that have not been processed')
+        return
 
     await runDBCommand(`DELETE FROM ${suborders} WHERE id = ${suborderId};`)
-
-    return res.sendStatus(200)
 }
 
-export async function updateSuborderHandler(req, res) {
-    const params = req.params
+async function tryUpdateSuborder(suborder) {
+    const suborderId = suborder.id
+    const quantity = suborder.quantity
+    const instructions = suborder.instructions
 
-    const instructions = params.instructions
-    const quantity = parseInt(params.quantity)
-    const suborderId = parseInt(params.orderId)
+    if(!between(quantity, 1, Number.MAX_VALUE))
+        return
 
-    if(suborderId === undefined)
-        return return400Response(req, res, 'Bad Request')
+    if(!between(instructions.length, 0, 300))
+        return
 
-    const rows = await runDBCommand(`SELECT status from ${suborders} where id = ${suborderId};`)
-    if(rows.length === 0)
-        return return400Response(req, res, 'Bad Request: No such suborder')
-
-    const suborder = rows[0]
-    if(suborder.status !== ordered)
-        return return400Response(req, res, 'Bad Request: Can only update orders that have not been processed')
-
-    if(!between(quantity, 0, Number.MAX_VALUE))
-        return return400Response(req, res, 'Bad Request: Invalid quantity')
-
-    if(!between(instructions.length, 1, 300))
-        return return400Response(req, res, 'Bad Request: Invalid Instruction')
+    const rows = await runDBCommand(`SELECT status FROM ${suborders} WHERE id = ${escape(suborderId)};`)
+    if(rows.length === 0 || rows[0].status !== ordered)
+        return null
 
     await runDBCommand(`UPDATE ${suborders} 
-                          SET quantity = ${escape(quantity)}, instructions = ${escape(instructions)},
-                          WHERE id = ${suborderId};`)
+                          SET quantity = ${escape(quantity)}, instructions = ${escape(instructions)}
+                          WHERE id = ${escape(suborderId)};`)
+}
 
-    return res.sendStatus(200)
+export async function updateOrderHandler(req, res) {
+    const userId = req.user.id
+    const orderId = parseInt(req.params.orderId)
+
+    const body = req.body
+    if(body === undefined)
+        return return400Response(req, res, 'Bad Request: Body not defined')
+
+    if(isNaN(orderId) || (await runDBCommand(`SELECT 1 FROM ${orders} WHERE id = ${escape(orderId)} AND status = ${escape(completed)};`)).length === 0)
+        return return400Response(req, res, 'Bad Request: Order not found')
+
+    const actions = body.actions
+    if(actions === undefined || !Array.isArray(actions))
+        return return400Response(req, res, 'Bad Request: Actions not found')
+
+    const inserts = []
+
+    for(let i = 0; i < actions.length; i++) {
+        const current = actions[i]
+
+        if(current.state === undefined || current.id === undefined || current.quantity === undefined || current.foodId === undefined || current.instructions === undefined || typeof current.quantity !== 'number')
+            return return400Response(req, res, 'Bad Request: Suborders require a valid status, id, quantity, foodId and instruction')
+
+        switch(current.state) {
+            case 1:
+                if(current.quantity > 0)
+                    await tryUpdateSuborder(current)
+                else
+                    await tryRemoveSuborder(current.id)
+                break
+            case 2:
+                if(current.quantity > 0)
+                {
+                    const result = await tryAddSuborder(userId, orderId, current)
+                    if(result != null)
+                        inserts.push(result)
+                }
+                break
+            default:
+                break
+        }
+    }
+
+    if(inserts.length >0)
+        await runDBCommand(`INSERT INTO ${suborders} (foodId, orderId, authorId, quantity, instructions, status) VALUES ${inserts.join(', ')};`)
+
+    return res.redirect('/dashboard')
 }
 
 export async function completeOrderHandler(req, res) {
     const orderId = parseInt(req.params.orderId)
 
-    const rows = await runDBCommand(`SELECT status from ${suborders} where id = ${orderId};`)
+    const rows = await runDBCommand(`SELECT status from ${orders} where id = ${orderId};`)
     if(rows.length === 0)
         return return400Response(req, res, 'Bad Request: No such suborder')
 
-    const suborder = rows[0]
-    if(suborder.status !== ordered)
-        return return400Response(req, res, 'Bad Request: Can only remove orders that have not been processed')
+    const order = rows[0]
+    if(order.status === completed)
+        return return400Response(req, res, 'Bad Request: Order is already complete')
 
     await runDBCommand(`UPDATE ${orders}
-                           SET status = ${escape(completed)}, completedOn = ${escape(now())}}
+                           SET status = ${escape(completed)}, completedOn = ${escape(now())}
                            WHERE id = ${orderId};`)
 
     return res.sendStatus(200)
 }
 
-export async function payForOrderHandler(req, res) {
+export async function renderPaymentHandler(req, res) {
+    const orderId = parseInt(req.params.orderId)
+
+    const rows = await runDBCommand(`SELECT payedBy, status FROM ${orders} WHERE id = ${orderId};`)
+
+    if(rows.length !== 1)
+        return return400Response(req, res, 'Bad Request: No such order')
+
+    const order = rows[0]
+    if(order.status !== completed)
+        return return400Response(req, res, 'Bad Request: Order is not completed')
+
+    if(order.payedBy != null)
+        return return400Response(req, res, 'Bad Request: Order is already payed for')
+
+    const result = (await runDBCommand(`SELECT SUM(${foods}.price * ${suborders}.quantity) AS subtotal FROM ${suborders}
+                                              INNER JOIN ${foods} ON ${foods}.id = ${suborders}.foodId
+                                              WHERE ${suborders}.orderId = ${escape(orderId)}`))
+
+    const subtotal = result[0].subtotal
+
+    return res.render('pay', {
+        userId: req.user.id,
+        orderId: orderId,
+        subtotal: subtotal,
+        discount: (subtotal < 1000) ? 0 : (subtotal < 2000 ? 10 : 15)
+    })
+}
+
+export async function confirmPaymentHandler(req, res) {
+    const orderId = parseInt(req.params.orderId)
+
+    const body = req.body
+    if(body === undefined)
+        return return400Response(req, res, 'Bad Request')
+
+    const tip = body.tip
+    const total = body.total
+    const subtotal = body.subtotal
+    const discount = body.discount
+
+    if(tip === undefined || total === undefined || subtotal === undefined || discount === undefined || typeof tip != 'number' || typeof total != 'number' || typeof subtotal != 'number' || typeof discount != 'number')
+        return return400Response(req, res, 'Bad Request')
+
+    const rows = await runDBCommand(`SELECT payedBy, status FROM ${orders} WHERE id = ${orderId};`)
+
+    if(rows.length !== 1)
+        return return400Response(req, res, 'Bad Request: No such order')
+
+    const order = rows[0]
+    if(order.status !== completed)
+        return return400Response(req, res, 'Bad Request: Order is not completed')
+
+    if(order.payedBy != null)
+        return return400Response(req, res, 'Bad Request: Order is already payed for')
+
+    await runDBCommand(`UPDATE ${orders} SET 
+                          payedBy = ${req.user.id}, 
+                          payedOn = ${escape(now())},
+                          tip = ${escape(tip)},
+                          total = ${escape(total)},
+                          subtotal = ${escape(subtotal)},
+                          discount = ${escape(discount)},
+                          WHERE id = ${escape(orderId)};`)
+
     return res.sendStatus(200)
 }
 
-export async function renderAllOrdersHandler(req, res) {
-    const userId = req.user.id
+export async function renderIncompleteSubordersHandler(req, res) {
+    const allSuborders = await runDBCommand(`SELECT ${foods}.name, ${suborders}.id, ${suborders}.quantity, ${suborders}.instructions, ${suborders}.status FROM ${suborders}
+                                                    INNER JOIN ${foods} ON ${foods}.id = ${suborders}.foodID
+                                                    WHERE ${suborders}.status != ${escape(completed)};`)
 
-    if ((await runDBCommand(`SELECT 1 FROM ${users} WHERE userId = ${userId};`)).length === 0)
-        return return400Response(req, res, 'Bad Request')
-
-    return res.render('orders', {
-        orders:  await runDBCommand(`SELECT * FROM ${orders} WHERE createdBY = ${escape(userId)};`)
+    return res.render('suborders', {
+        suborders: allSuborders
     })
+}
+
+export async function updateSubordersStatusHandler(req, res) {
+    const body = req.body
+    if(body === undefined)
+        return return400Response(req, res, 'Bad Request: Body not defined')
+
+    const actions = body.actions
+    if(actions === undefined || !Array.isArray(actions))
+        return return400Response(req, res, 'Bad Request: Actions not found')
+
+    for(let i = 0; i < actions.length; i++) {
+        const current = actions[i]
+
+        if(current.id === undefined || current.status === undefined || typeof current.id != 'number')
+            return return400Response(req, res, 'Bad Request: Suborders require a valid id and status')
+
+        switch(current.status) {
+            case processing:
+                await runDBCommand(`UPDATE ${suborders} SET status = ${escape(processing)} WHERE id = ${current.id};`)
+                break
+            case completed:
+                await runDBCommand(`UPDATE ${suborders} SET status = ${escape(completed)} WHERE id = ${current.id};`)
+                break
+        }
+    }
+
+    return res.redirect('/dashboard')
 }

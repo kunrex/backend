@@ -34,3 +34,15 @@
 .green {
     background-color: lightgreen;
 }
+
+.icon-button[data-status='true'] {
+    color: black;
+}
+
+.icon-button[data-status='true']:hover {
+    cursor: pointer;
+}
+
+.icon-button[data-status='false'] {
+    color: gray;
+}

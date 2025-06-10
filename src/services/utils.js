@@ -80,3 +80,8 @@ export async function authorise(req, res, next) {
     else
         await authoriseCookies(req, res, next)
 }
+
+export async function authoriseChef(req, res, next) {
+    const auth = req.user.auth
+    return (auth & 2) === 2 ? next() : return40XResponse(401, req, res, 'Permission Denied')
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
+
+    <link rel="stylesheet" href="/pages/pay/styles.css"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container px-5">
+            <a class="navbar-brand">Backend.Food</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link">Log In</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="masthead text-black align-content-center h-100">
+        <div class="masthead-content">
+            <div class="container d-flex flex-column justify-content-center align-items-center bg-white rounded-5 p-5" style="max-width: 800px;">
+                <div class="text-center w-100 mb-5">
+                    <h1>
+                        Payment For Order: <%= orderId %>
+                    </h1>
+                </div>
+                <div class="d-flex flex-column justify-content-evenly align-items-center w-100 mb-2">
+                    <div class="d-flex justify-content-evenly align-items-center w-75">
+                        <div class="text-start w-50">
+                            <h4>Subtotal</h4>
+                        </div>
+                        <div class="text-end w-50">
+                            <span class="fs-6">₹<%= subtotal %></span>
+                        </div>
+                    </div>
+                    <div class="text-center w-100 p-0">
+                        <hr>
+                        <h5>
+                            Tip (Optional)
+                        </h5>
+                    </div>
+                    <div class="d-flex justify-content-evenly align-items-center w-100 p-0 mb-2">
+                        <button onclick="setTip(this, 0)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="selected">NONE</button>
+                        <button onclick="setTip(this, 10)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="">₹10</button>
+                        <button onclick="setTip(this, 50)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="">₹50</button>
+                        <button onclick="setTip(this, 100)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="">₹100</button>
+                    </div>
+                    <hr class="w-100">
+                    <div class="d-flex justify-content-evenly align-items-center w-75 mt-2 mb-2">
+                        <div class="text-start w-50">
+                            <h1>Total</h1>
+                        </div>
+                        <div class="text-end w-50">
+                            <span id="total" class="fs-5"></span><strong><%= discount === 0 ? '' : `(${discount}% discount)` %></strong>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-evenly align-items-center w-100 mt-2">
+                        <button id="pay" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Pay</button>
+                        <button id="cancel" value="login" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-circle-1 bg-circle bobble-effect-10"></div>
+        <div class="bg-circle-2 bg-circle bobble-effect-8"></div>
+        <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
+        <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
+    </header>
+    <script>
+        const userId = <%- userId %>
+        const orderId = <%- orderId %>
+        const subtotal = <%- subtotal %>
+        const discount = <%- discount %>
+
+        let tip = 0
+        let total = subtotal * (100 - discount) / 100
+
+        const totalText = document.getElementById('total')
+        const buttons = document.querySelectorAll('.btn-secondary')
+
+        const payButton = document.getElementById('pay')
+        const cancelButton = document.getElementById('cancel')
+
+        totalText.innerHTML = `₹${total}`
+
+        buttons[0].style.border = 'solid thin black'
+    </script>
+    <script>
+        function setTip(button, value) {
+            tip = value
+            total = (subtotal + tip) * (100 - discount) / 100
+
+            totalText.innerHTML = `₹${total}`
+
+            for(let i = 0; i < buttons.length; i++)
+                buttons[i].style.border = ''
+
+            button.style.border = 'solid thin black'
+        }
+
+        payButton.onclick = async () => {
+            await fetch(`/pay/confirm/${orderId}`, {
+                method: 'POST'
+            })
+
+            window.location.href = `/dashboard`
+        }
+
+        cancelButton.onclick = async () => {
+            window.location.href = `/order/${orderId}`
+        }
+    </script>
+</body>
+</html>

@@ -2,9 +2,17 @@ header.masthead {
     min-height: 100vh;
 }
 
-form {
-    max-width: 400px;
-    width: 100%;
+.container {
+    max-width: 800px;
+    max-height: 1000px;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.scroll {
+    max-height: 300px;
 }
 
 @keyframes bobble {

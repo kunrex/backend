@@ -80,22 +80,22 @@
                                         <h3 class="card-title m-0"><%= current.name %></h3>
                                         <div class="w-100 p-0 d-flex justify-content-evenly align-items-center">
                                             <div class="mt-3 w-25 overflow-x-scroll no-wrap">
-                                                <p class="card-text">Added by: <%= current.addedBy %></p>
+                                                <p class="card-text">Added by: <%= current.authorName %></p>
                                             </div>
-                                            <input type="text" name="instructions" class="ms-3 w-75 form-control" id="pwd" placeholder="Instructions" maxlength="300">
+                                            <input type="text" name="instructions" class="ms-3 w-75 form-control" id="pwd" placeholder="<%- current.instructions === '' ? 'Instructions' : current.instructions %>" maxlength="300">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-auto d-flex flex-column justify-content-center align-items-center me-2">
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <i class="bi bi-plus-lg m-1 icon-button"></i>
-                                        <h6 class="m-1"><%= current.quantity %></h6>
                                         <i class="bi bi-dash-lg m-1 icon-button"></i>
+                                        <h6 class="m-1"><%= current.quantity %></h6>
+                                        <i class="bi bi-plus-lg m-1 icon-button"></i>
                                     </div>
                                     <div>
-                                        <% if (current.state === 'ordered') { %>
+                                        <% if (current.status === 'ordered') { %>
                                             <i class="bi bi-list-ul fs-4 text-dark"></i>
-                                        <% } else if(current.state === 'processing') { %>
+                                        <% } else if(current.status === 'processing') { %>
                                             <i class="bi bi-hourglass-split fs-4 text-warning"></i>
                                         <% } else { %>
                                             <i class="bi bi-clipboard2-check-fill fs-4 text-success"></i>
@@ -126,7 +126,12 @@
         const menuChildren = document.getElementById('menu-parent').children
 
         const payButton = document.getElementById('pay')
+        const confirmButton = document.getElementById('confirm')
         const completeButton = document.getElementById('complete')
+
+        payButton.onclick = () => {
+            window.location.href = `/pay/${orderId}`
+        }
 
         const ordersParent = document.getElementById('orders-parent')
     </script>
@@ -228,18 +233,20 @@
             quantityRow.className = "d-flex justify-content-center align-items-center"
 
             const plusIcon = document.createElement("i")
-            plusIcon.className = "bi bi-plus-lg m-1"
+            plusIcon.className = "bi bi-plus-lg m-1 icon-button"
+            plusIcon.dataset.status = "true"
 
             const quantity = document.createElement("h6")
             quantity.className = "m-1"
             quantity.textContent = '1'
 
             const minusIcon = document.createElement("i")
-            minusIcon.className = "bi bi-dash-lg m-1"
+            minusIcon.className = "bi bi-dash-lg m-1 icon-button"
+            minusIcon.dataset.status = 'true'
 
-            quantityRow.appendChild(plusIcon);
-            quantityRow.appendChild(quantity);
             quantityRow.appendChild(minusIcon);
+            quantityRow.appendChild(quantity);
+            quantityRow.appendChild(plusIcon);
 
             const stateIcon = document.createElement("div")
             const icon = document.createElement("i")
@@ -263,7 +270,6 @@
 
             for (let i = 0; i < orders.length; i++) {
                 const current = orders[i]
-                console.log(current)
                 if (current.foodId === item.id && current.status === 'ordered') {
                     incrementOrder(current)
                     return
@@ -271,6 +277,7 @@
             }
 
             const order = {
+                id: -1,
                 foodId: item.id,
                 quantity: 1,
                 instructions: '',
@@ -278,23 +285,23 @@
                 state: 2
             }
 
-            const result = createCard(item.name)
-            ordersParent.appendChild(result[0])
+            const htmlElements = createCard(item.name)
+            ordersParent.appendChild(htmlElements[0])
 
-            order.quantityText = result[1]
+            order.quantityText = htmlElements[1]
 
-            order.decreaseButton = result[2]
+            order.decreaseButton = htmlElements[2]
             order.decreaseButton.onclick = () => {
                 decrementOrder(order)
             }
 
-            order.increasedButton = result[3]
+            order.increasedButton = htmlElements[3]
             order.increasedButton.onclick = () => {
                 incrementOrder(order)
             }
 
-            result[4].onchange = (e) => {
-                order.instruction = e.target.value
+            htmlElements[4].onchange = (e) => {
+                order.instructions = e.target.value
                 order.status = 1
             }
 
@@ -312,16 +319,15 @@
         }
 
         function decrementOrder(order) {
-            if(order.decreaseButton.dataset.status === 'false')
+            if (order.decreaseButton.dataset.status === 'false')
                 return
 
-            if(order.state < 1)
+            if (order.state < 1)
                 order.state = 1
 
             order.quantity -= 1
 
-            if(order.quantity === 0)
-            {
+            if (order.quantity === 0) {
                 order.quantityText.style.color = 'red'
                 order.decreaseButton.dataset.status = 'false'
             }
@@ -329,45 +335,47 @@
             order.quantityText.innerHTML = order.quantity.toString()
         }
 
-        function isComplete() {
-            for(let i = 0; i < orders.length; i++)
-                if(orders[i].status !== 'completed')
-                    return false
+        async function confirm() {
+            const actions = []
 
-            return true
-        }
-
-        async function commit() {
             for(let i = 0; i < orders.length; i++) {
                 const order = orders[i]
 
-                switch(order.status) {
+                switch(order.state) {
                     case 1:
-                        if(order.quantity > 0)
-                            await fetch(`/suborder/update/${order.id}/${order.quantity}/${order.instructions}`, {
-                                method: 'POST'
-                            })
-                        else
-                            await fetch(`/suborder/remove/${order.id}`, {
-                                method: 'POST'
-                            })
-                        break
                     case 2:
-                        if(order.quantity > 0)
-                            await fetch(`/suborder/add/${orderId}/${order.foodId}/${order.quantity}/${order.instructions}`, {
-                                method: 'POST'
-                            })
+                        actions.push({
+                            id: order.id,
+                            foodId: order.foodId,
+                            quantity: order.quantity,
+                            instructions: order.instructions,
+                            state: order.state
+                        })
+                        break
+                    default:
                         break
                 }
             }
+
+            if(actions.length > 0)
+                await fetch(`/order/update/${orderId}`, {
+                    method: `POST`,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        actions: actions
+                    })
+                })
         }
 
         function setup() {
-            for(let i = 0; i < menuChildren.length; i++) {
-                menuChildren[i].querySelector('button').onclick = () => {
-                    addItem(i)
+            if(<%- !completed %>)
+                for(let i = 0; i < menuChildren.length; i++) {
+                    menuChildren[i].querySelector('button').onclick = () => {
+                        addItem(i)
+                    }
                 }
-            }
 
             const ordersChildren = ordersParent.children
             for(let i = 0; i < ordersChildren.length; i++) {
@@ -375,8 +383,8 @@
                 const htmlElement = ordersChildren[i]
 
                 const input = htmlElement.querySelector('input')
-                const quantityText = htmlElement.querySelector('h6')
                 const buttons = htmlElement.querySelectorAll('i')
+                const quantityText = htmlElement.querySelector('h6')
 
                 if(order.status === 'ordered') {
                     buttons[0].onclick = () => {
@@ -387,25 +395,24 @@
                         incrementOrder(order)
                     }
 
-                    order.quantityText = quantityText
-                    order.decreaseButton = buttons[0]
-
-                    input.onchange = (e) => {
-                        order.instruction = e.target.value
-                        order.status = 1
-                    }
-
-                    payButton.disabled = true
-                    completeButton.disabled = true
-
                     buttons[0].dataset.status = 'true'
                     buttons[1].dataset.status = 'true'
 
+                    input.onchange = (e) => {
+                        order.instructions = e.target.value
+                        order.status = 1
+                    }
+
                     order.state = 0
+                    order.quantityText = quantityText
+                    order.decreaseButton = buttons[0]
+
+                    payButton.disabled = true
+                    completeButton.disabled = true
                 }
                 else {
                     input.readOnly = true
-                    input.value = order.instruction
+                    input.value = order.instructions
 
                     buttons[0].dataset.status = 'false'
                     buttons[1].dataset.status = 'false'
@@ -413,39 +420,40 @@
                     order.state = 3
                 }
             }
-
-            document.getElementById('confirm').onclick = async () => {
-                await commit()
-                await fetch('dashboard')
-            }
-
-            completeButton.onclick = async () => {
-                if(!isComplete())
-                    return
-
-                await fetch(`/order/complete/${orderId}`)
-                await fetch('dashboard')
-            }
-
-            payButton.onclick = async () => {
-                if(!isComplete())
-                    return
-
-                await fetch('dashboard')
-            }
         }
     </script>
     <script>
-        if(<%- completed %>) {
-            document.getElementById('confirm').onclick = async () => {
-                await fetch('dashboard')
+        if(<%- completed %>)
+        {
+            confirmButton.onclick = () => {
+                window.location.href = '/dashboard'
             }
 
             completeButton.disabled = true
-            payButton.disabled = true
         }
         else
-            setup()
+        {
+            confirmButton.onclick = async () => {
+                await confirm()
+                window.location.href = '/dashboard'
+            }
+
+            completeButton.onclick = async () => {
+                await fetch(`/order/complete/${orderId}`, {
+                    method: 'POST'
+                })
+                window.location.href = '/dashboard'
+            }
+        }
+
+        if(<%- !completed %> || <%- payed %>)
+            payButton.disabled = true
+        else
+            payButton.onclick = () => {
+                window.location.href = `/pay/${orderId}`
+            }
+
+        setup()
     </script>
 </body>
 </html>

@@ -2,11 +2,6 @@ header.masthead {
     min-height: 100vh;
 }
 
-form {
-    max-width: 400px;
-    width: 100%;
-}
-
 @keyframes bobble {
     0% {
         transform: translateY(10px);

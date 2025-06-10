@@ -30,7 +30,7 @@ export async function runDBCommand(query, params = []) {
         return results
     }
     catch (err) {
-        console.log(`SQL Query Error: ${err.message}`)
-        return { }
+        console.log(`SQL Query Error: ${err.message}; on query: ${query}`)
+        return []
     }
 }
