@@ -85,3 +85,8 @@ export async function authoriseChef(req, res, next) {
     const auth = req.user.auth
     return (auth & 2) === 2 ? next() : return40XResponse(401, req, res, 'Permission Denied')
 }
+
+export async function authoriseAdmin(req, res, next) {
+    const auth = req.user.auth
+    return (auth & 4) === 4 ? next() : return40XResponse(401, req, res, 'Permission Denied')
+}

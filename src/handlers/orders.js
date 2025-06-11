@@ -48,6 +48,17 @@ export async function addFood(foodId) {
 export async function renderOrderHandler(req, res) {
     const orderId = parseInt(req.params.orderId)
 
+    const rows = await runDBCommand(`SELECT ${users}.name AS authorName FROM ${orders}
+                                            INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy
+                                            WHERE ${orders}.id = ${escape(orderId)};`)
+
+    if(rows.length !== 1)
+        return return400Response(req, res, 'Bad Request: Order not found')
+
+    const authorName = req.params.authorName
+    if(rows[0].authorName !== authorName)
+        return return400Response(req, res, 'Bad Request: Order creator did not match provided author name')
+
     const allSuborders = await runDBCommand(`SELECT ${suborders}.*, ${foods}.name, ${users}.name AS authorName FROM ${suborders} 
                                             INNER JOIN ${foods} ON ${suborders}.foodId = ${foods}.id
                                             INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
@@ -313,4 +324,23 @@ export async function updateSubordersStatusHandler(req, res) {
     }
 
     return res.redirect('/dashboard')
+}
+
+export async function renderAllOrdersHandler(req, res) {
+    const allOrders = await runDBCommand(`SELECT ${orders}.id, ${orders}.createdOn, ${users}.name AS authorName, ${orders}.status FROM ${orders}
+                                                 INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy;`)
+
+    return res.render('orders', {
+        allowJoin: false,
+        orders: allOrders
+    })
+}
+
+export async function renderUserOrdersHandler(req, res) {
+    const allOrders = await runDBCommand(`SELECT id, createdOn, ${escape(req.user.name)} AS authorName, status FROM ${orders} WHERE createdBy = ${escape(req.user.id)};`)
+
+    return res.render('orders', {
+        allowJoin: true,
+        orders: allOrders
+    })
 }

@@ -5,7 +5,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 
 import { authMiddleware } from "./middleware/auth.js";
-import {authorise, authoriseChef, return400Response} from "./services/utils.js";
+import {authorise, authoriseAdmin, authoriseChef, return400Response} from "./services/utils.js";
 import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler} from "./handlers/auth.js";
 import {dashboardHandler} from "./handlers/dashboard.js";
 import {
@@ -15,7 +15,11 @@ import {
     getMenuHandler,
     completeOrderHandler,
     renderPaymentHandler,
-    updateOrderHandler, confirmPaymentHandler, renderIncompleteSubordersHandler, updateSubordersStatusHandler
+    updateOrderHandler,
+    confirmPaymentHandler,
+    renderIncompleteSubordersHandler,
+    updateSubordersStatusHandler,
+    renderUserOrdersHandler, renderAllOrdersHandler
 } from "./handlers/orders.js";
 
 const __dirname = import.meta.dirname;
@@ -41,7 +45,7 @@ app.get('/auth/refresh', accessRefreshHandler)
 app.get('/dashboard', authorise, dashboardHandler)
 
 app.get('/order', authorise, newOrderHandler)
-app.get('/order/:orderId', authorise, renderOrderHandler)
+app.get('/order/:orderId/:authorName', authorise, renderOrderHandler)
 
 app.post('/order/pay/:orderId', authorise, renderPaymentHandler)
 app.post('/order/update/:orderId', authorise, updateOrderHandler)
@@ -52,6 +56,9 @@ app.post('/pay/confirm/:orderId', authorise, confirmPaymentHandler)
 
 app.get('/suborders', authorise, authoriseChef, renderIncompleteSubordersHandler)
 app.post('/suborders/update', authorise, authoriseChef, updateSubordersStatusHandler)
+
+app.get('/orders/my/', authorise, renderUserOrdersHandler)
+app.get('/orders/all/', authorise, authoriseAdmin, renderAllOrdersHandler)
 
 app.use((req, res) => {
     return return400Response(req, res, 'Bad Request')

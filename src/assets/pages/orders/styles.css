@@ -45,9 +45,3 @@ header.masthead {
 .bobble-effect-8 {
     animation: bobble 8s infinite;
 }
-
-span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
