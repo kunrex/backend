@@ -9,10 +9,8 @@ import {authorise, authoriseAdmin, authoriseChef, return400Response} from "./ser
 import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler} from "./handlers/auth.js";
 import {dashboardHandler} from "./handlers/dashboard.js";
 import {
-    getTagsHandler,
     newOrderHandler,
     renderOrderHandler,
-    getMenuHandler,
     completeOrderHandler,
     renderPaymentHandler,
     updateOrderHandler,
@@ -21,7 +19,14 @@ import {
     updateSubordersStatusHandler,
     renderUserOrdersHandler, renderAllOrdersHandler
 } from "./handlers/orders.js";
-import {renderUserInfoHandler, setUserAuthHandler} from "./handlers/admin.js";
+import {
+    addFoodHandler,
+    addTagHandler,
+    editTagsHandler,
+    renderAddHandler,
+    renderUserInfoHandler,
+    setUserAuthHandler
+} from "./handlers/admin.js";
 
 const __dirname = import.meta.dirname;
 
@@ -29,9 +34,12 @@ const app = express()
 const port = parseInt(process.env.APP_PORT)
 
 app.use(cookieParser())
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
 app.use(express.static(path.join(__dirname, 'assets')))
+app.use('/js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')))
 app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
 
 app.set('view engine', 'ejs')
@@ -65,6 +73,12 @@ app.get('/admin/userinfo', authorise, authoriseAdmin, renderUserInfoHandler)
 app.get('/admin/userinfo/:email', authorise, authoriseAdmin, renderUserInfoHandler)
 
 app.post('/admin/grant/:email', authorise, authoriseAdmin, setUserAuthHandler)
+
+app.get('/admin/add', authorise, authoriseAdmin, renderAddHandler)
+
+app.post('/admin/add/food', authorise, authoriseAdmin, addFoodHandler)
+app.post('/admin/add/tags/add/:tag', authorise, authoriseAdmin, addTagHandler)
+app.post('/admin/add/tags/edit/:foodId', authorise, authoriseAdmin, editTagsHandler)
 
 app.use((req, res) => {
     return return400Response(req, res, 'Bad Request')

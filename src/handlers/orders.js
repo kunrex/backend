@@ -26,11 +26,11 @@ export async function newOrderHandler(req, res) {
     return res.redirect(`/order/${result.insertId}`)
 }
 
-const tags = await runDBCommand(`SELECT name FROM ${foodTags};`)
+export const tags = await runDBCommand(`SELECT name FROM ${foodTags};`)
 
-const menu = await runDBCommand(`SELECT ${foods}.*, GROUP_CONCAT(${foodTags}.Name ORDER BY ${foodTags}.ID) AS tags FROM ${foods}
-                                            INNER JOIN ${foodTagRelations} ON ${foods}.ID = ${foodTagRelations}.FoodID
-                                            INNER JOIN ${foodTags} ON ${foodTags}.ID = ${foodTagRelations}.TagID
+export const menu = await runDBCommand(`SELECT ${foods}.*, IFNULL(GROUP_CONCAT(${foodTags}.Name ORDER BY ${foodTags}.ID), '') AS tags FROM ${foods}
+                                            LEFT JOIN ${foodTagRelations} ON ${foods}.ID = ${foodTagRelations}.FoodID
+                                            LEFT JOIN ${foodTags} ON ${foodTags}.ID = ${foodTagRelations}.TagID
                                             GROUP BY ${foods}.ID
                                             ORDER BY ${foods}.ID;`)
 
@@ -38,11 +38,13 @@ export function addTag(tag) {
     tags.push(tag)
 }
 
-export async function addFood(foodId) {
-    menu.push(await runDBCommand(`SELECT ${foods}.*, GROUP_CONCAT(${foodTags}.Name ORDER BY ${foodTags}.ID) AS Tags FROM ${foods}
-                                            INNER JOIN ${foodTagRelations} ON ${foods}.ID = ${foodTagRelations}.FoodID
-                                            INNER JOIN ${foodTags} ON ${foodTags}.ID = ${foodTagRelations}.TagID
-                                            WHERE ${foods}.id = ${escape(foodId)};`))
+export function addFood(food) {
+    menu.push(food)
+}
+
+export function updateFoodTags(foodId, tags) {
+    const food = menu.find(x => x.id === foodId)
+    food.tags = tags
 }
 
 export async function renderOrderHandler(req, res) {
@@ -83,24 +85,6 @@ export async function renderOrderHandler(req, res) {
         orderId: orderId,
         completed: order.status === 'completed',
         payed: order.payedBy != null
-    })
-}
-
-export function getTagsHandler(req, res) {
-    const tagValues = []
-    for(let i = 0; i < tags.length; i++)
-        tagValues.push(tags[i].name)
-
-    return res.json({
-        code: 200,
-        tags: tagValues
-    })
-}
-
-export function getMenuHandler(req, res) {
-    return res.json({
-        code: 200,
-        menu: menu
     })
 }
 

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
+
+    <link rel="stylesheet" href="/pages/add/styles.css"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+        <div class="container px-5">
+            <a class="navbar-brand">Backend.Food</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link">Log In</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="masthead text-black align-content-center h-100">
+        <div class="masthead-content">
+            <div class="container d-flex flex-column justify-content-center align-items-center bg-white rounded-5 p-5" style="max-width: 800px;">
+                <div class="text-center w-100">
+                    <h1>
+                        Add New Items and Tags
+                    </h1>
+                    <hr class="w-100">
+                </div>
+                <div class="flex-grow-1 overflow-y-scroll no-wrap p-3 w-100">
+                    <div class="w-100 scroll">
+                        <div class="accordion w-100" id="accordionAdd">
+                            <div class="accordion-item w-100">
+                                <h2 class="accordion-header w-100" id="allTags">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        Current Tags
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse w-100" aria-labelledby="allTags" data-bs-parent="#accordionAdd">
+                                    <div class="accordion-body w-100 overflow-x-scroll no-wrap">
+                                        <% for (let i = 0; i < tags.length; i++) { %>
+                                            <span class="p-2 rounded-2 text-center text-warning-emphasis text-bg-warning fw-bold ms-1 me-1"><%= tags[i] %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item w-100">
+                                <h2 class="accordion-header w-100" id="allItems">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Edit Food Tags
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse w-100" aria-labelledby="allItems" data-bs-parent="#accordionAdd">
+                                    <div class="accordion-body w-100 d-flex flex-column">
+                                        <div class="w-100 d-flex flex-column mb-3">
+                                            <label for="editTagItems" class="mb-2">Choose an Item:</label>
+                                            <select name="items" id="editTagItems" class="p-2">
+                                                <option value="" selected disabled>Select an option</option>
+                                                <% for (let i = 0; i < menu.length; i++) { %>
+                                                    <% const current = menu[i] %>
+                                                    <option value="<%= current.name %>"><%= current.name %></option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="w-100 text-center mb-3">
+                                            <h5>
+                                                Tags
+                                            </h5>
+                                        </div>
+                                        <div id="editTagButtons" class="w-100 overflow-x-scroll no-wrap mb-3 p-2">
+                                            <% for (let i = 0; i < tags.length; i++) { %>
+                                                <button disabled onclick="toggleTag('<%- tags[i] %>', this)" class="btn text-warning fw-bold ms-1 me-1" data-tag="<%= tags[i] %>"><%= tags[i] %></button>
+                                            <% } %>
+                                        </div>
+                                        <div class="w-100 text-center">
+                                            <button disabled id="editTagConfirm" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item w-100">
+                                <h2 class="accordion-header w-100" id="newTag">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Create a New Tag
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse w-100"  aria-labelledby="newTag" data-bs-parent="#accordionAdd">
+                                    <div class="accordion-body w-100 d-flex">
+                                        <div class="w-50 overflow-x-scroll no-wrap">
+                                            <label for="createTagInput" class="form-label">New Tag</label>
+                                            <input type="text" name="tag" class="form-control" id="createTagInput" placeholder="Enter New Tag" maxlength="50">
+                                        </div>
+                                        <div class="w-25 d-flex justify-content-center align-items-end text-danger overflow-x-scroll no-wrap p-2">
+                                            <span id="createTagError"></span>
+                                        </div>
+                                        <div class="w-25 text-center overflow-x-scroll no-wrap">
+                                            <button id="createTagConfirm" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item w-100">
+                                <h2 class="accordion-header w-100" id="newItem">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        Add a New Food Item
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse w-100" aria-labelledby="newItem" data-bs-parent="#accordionAdd">
+                                    <div class="accordion-body w-100">
+                                        <div class="mb-3">
+                                            <label for="addFoodName" class="form-label">Name</label>
+                                            <input type="text" name="name" class="form-control" id="addFoodName" placeholder="Enter name" maxlength="100">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="addFoodDescription" class="form-label">Enter Description</label>
+                                            <input type="text" name="description" class="form-control" id="addFoodDescription" placeholder="Enter Description" maxlength="300">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="addFoodPrice" class="form-label">Enter Price</label>
+                                            <input type="number" name="price" class="form-control" id="addFoodPrice" min="0" placeholder="Enter Price">
+                                        </div>
+                                        <div class="mb-3 w-100 d-flex justify-content-evenly">
+                                            <button id="addFoodVegetarian" onclick="setVegetarian()" class="btn text-success-emphasis text-bg-success fw-bold ms-1 me-1">Vegetarian</button>
+                                            <button id="addFoodNonVegetarian" onclick="setNonVegetarian()" class="btn text-danger fw-bold ms-1 me-1">Non Vegetarian</button>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Cooking Duration</label>
+                                            <div class="d-flex justify-content-evenly">
+                                                <input id="addFoodHours" type="number" class="form-control ms-1 me-1" name="hours" min="0" max="24" step="1" placeholder="hh">
+                                                <input id="addFoodMinutes" type="number" class="form-control ms-1 me-1" name="minutes" min="0" max="59" step="1" placeholder="mm">
+                                                <input id="addFoodSeconds" type="number" class="form-control ms-1 me-1" name="seconds" min="0" max="59" step="1" placeholder="ss">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 d-flex justify-content-evenly">
+                                            <div class="w-75 overflow-x-scroll no-wrap">
+                                                <label for="addFoodImageURL" class="form-label">Image Source</label>
+                                                <input type="url" name="image" class="form-control" id="addFoodImageURL" placeholder="Enter URL">
+                                            </div>
+                                            <div class="w-25 text-center overflow-x-scroll no-wrap">
+                                                <button onclick="fetchImage()" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Fetch</button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 form-control w-100 d-flex flex-column p-2">
+                                            <img id="addFoodImage" src="" class="w-100 h-auto">
+                                        </div>
+                                        <div class="mb-3 w-100 d-flex justify-content-center align-items-end text-danger overflow-x-scroll no-wrap p-2">
+                                            <span id="addFoodError"></span>
+                                        </div>
+                                        <div class="mb-3 w-100 text-center">
+                                            <button onclick="addFoodConfirm()" class="btn btn-primary btn-xl rounded-pill me-4 mt-4">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100 text-center">
+                    <button onclick="window.location.href = '/dashboard'" class="btn btn-primary btn-xl rounded-pill me-4 mt-4">Return</button>
+                </div>
+            </div>
+        </div>
+        <div class="bg-circle-1 bg-circle bobble-effect-10"></div>
+        <div class="bg-circle-2 bg-circle bobble-effect-8"></div>
+        <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
+        <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
+    </header>
+    <script type="module" src="/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const tags = <%- JSON.stringify(tags) %>
+        const menu = <%- JSON.stringify(menu) %>
+
+        const editTagItems = document.getElementById('editTagItems')
+        const editTagConfirm = document.getElementById('editTagConfirm')
+        const editTagButtons = document.getElementById('editTagButtons').children
+
+        const createTagInput = document.getElementById('createTagInput')
+        const createTagError = document.getElementById('createTagError')
+        const createTagConfirm = document.getElementById('createTagConfirm')
+
+        const addFoodName = document.getElementById('addFoodName')
+        const addFoodPrice = document.getElementById('addFoodPrice')
+        const addFoodDescription = document.getElementById('addFoodDescription')
+
+        const addFoodVegetarian = document.getElementById('addFoodVegetarian')
+        const addFoodNonVegetarian = document.getElementById('addFoodNonVegetarian')
+
+        const addFoodHours = document.getElementById('addFoodHours')
+        const addFoodMinutes = document.getElementById('addFoodMinutes')
+        const addFoodSeconds = document.getElementById('addFoodSeconds')
+
+        const addFoodImage = document.getElementById('addFoodImage')
+        const addFoodImageURL = document.getElementById('addFoodImageURL')
+
+        const addFoodError = document.getElementById('addFoodError')
+    </script>
+    <script>
+        const selectedTags = []
+
+        function toggleTag(tag, button) {
+            const index = selectedTags.indexOf(tag)
+
+            if(index < 0)
+            {
+                selectedTags.push(tag)
+                button.classList = 'btn text-warning-emphasis text-bg-warning fw-bold ms-1 me-1'
+            }
+            else
+            {
+                selectedTags.splice(index, 1)
+                button.classList = 'btn text-warning fw-bold ms-1 me-1'
+            }
+        }
+
+        editTagItems.onchange = (e) => {
+            const value = e.target.value
+            const item =  menu.find(x => x.name === value)
+
+            if(item === undefined)
+                return
+
+            selectedTags.splice(0, selectedTags.length)
+
+            const tags = item.tags
+            for(let i = 0; i < editTagButtons.length; i++) {
+                const button = editTagButtons[i]
+
+                button.disabled = false
+                const tag = button.dataset.tag
+
+                if(tags.includes(tag))
+                {
+                    selectedTags.push(tag)
+                    button.classList = 'btn text-warning-emphasis text-bg-warning fw-bold ms-1 me-1'
+                }
+                else
+                    button.classList = 'btn text-warning fw-bold ms-1 me-1'
+            }
+
+            editTagConfirm.disabled = false
+            editTagConfirm.onclick = async () => {
+                await fetch(`/admin/add/tags/edit/${item.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tags: selectedTags
+                    })
+                })
+
+                window.location.href = '/admin/add'
+            }
+        }
+    </script>
+    <script>
+        createTagConfirm.onclick = async () => {
+            const value = createTagInput.value.trim().toLowerCase()
+
+            if(!value) {
+                createTagError.innerHTML = 'Tag is empty'
+                return
+            }
+
+            if(tags.indexOf(value) >= 0) {
+                createTagError.innerHTML = 'Tag already exists'
+                return
+            }
+
+            await fetch(`/admin/add/tags/add/${value}`, {
+                method: 'POST',
+            })
+
+            createTagInput.value = ''
+            window.location.href = '/admin/add'
+        }
+    </script>
+    <script>
+        let isVegetarian = true
+
+        function setVegetarian() {
+            isVegetarian = true
+
+            addFoodVegetarian.className = 'btn text-success-emphasis text-bg-success fw-bold ms-1 me-1'
+            addFoodNonVegetarian.className = 'btn text-danger fw-bold ms-1 me-1'
+        }
+
+        function setNonVegetarian() {
+            isVegetarian = false
+
+            addFoodVegetarian.className = 'btn text-success fw-bold ms-1 me-1'
+            addFoodNonVegetarian.className = 'btn text-danger-emphasis text-bg-danger fw-bold ms-1 me-1'
+        }
+
+        let imageLoaded = false
+
+        function fetchImage() {
+            imageLoaded = false
+            addFoodError.innerHTML = ''
+
+            const value = addFoodImageURL.value
+            if(!value)
+            {
+                addFoodError.innerHTML = "Empty URL"
+                return
+            }
+
+            addFoodImage.src = value
+            addFoodImage.onload = () => {
+                imageLoaded = true
+            }
+        }
+
+        function asHHMMSS(hours, minutes, seconds) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        async function addFoodConfirm() {
+            addFoodError.innerHTML = ''
+
+            const name = addFoodName.value
+            const price = parseInt(addFoodPrice.value)
+            const description = addFoodDescription.value
+
+            if(!name || !description)
+            {
+                addFoodError.innerHTML = "Please enter a valid name, price and description"
+                return
+            }
+
+            const hours = addFoodHours.value
+            const minutes = addFoodMinutes.value
+            const seconds = addFoodSeconds.value
+
+            if(!hours || !minutes || !seconds)
+            {
+                addFoodError.innerHTML = "Please enter a time, make sure to fill hours, minutes and seconds"
+                return
+            }
+
+            if(!imageLoaded)
+            {
+                addFoodError.innerHTML = "No image loaded"
+                return
+            }
+
+            console.log(asHHMMSS(hours, minutes, seconds))
+
+            await fetch('/admin/add/food', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    price: price,
+                    description: description,
+
+                    veg: isVegetarian,
+                    cookTime: asHHMMSS(hours, minutes, seconds),
+
+                    image: addFoodImage.src
+                })
+            })
+
+            window.location.href = '/admin/add'
+        }
+    </script>
+</body>
+</html>
