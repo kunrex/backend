@@ -3,7 +3,7 @@ import { escape, runDBCommand, users } from "../services/db.js";
 import { accessRefreshTime, genAccessToken, genRefreshToken, verifyToken } from "../services/auth.js";
 import { between, access, refresh, return400Response, supportsJson, return40XResponse } from "../services/utils.js";
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function loginPageHandler(req, res) {
     return res.render('login', {

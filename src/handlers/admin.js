@@ -1,58 +1,47 @@
-import { now } from "../services/utils";
-import { completed, foodTags, orders, runDBCommand, escape, foods, foodTagRelations, users } from "../services/db";
+import {runDBCommand, users, escape} from "../services/db.js";
+import {return400Response} from "../services/utils.js";
+import {emailRegex} from "./auth.js";
 
-export async function getAllOrder() {
-    return await runDBCommand(`SELECT * FROM ${orders};`)
-}
-
-export async function getOnGoingOrders() {
-    return await runDBCommand(`SELECT * FROM ${orders} WHERE CompletedOn IS NULL;`)
-}
-
-export async function forceCompleteOrder(id) {
-    const result = await runDBCommand(`UPDATE ${orders} SET Status = ${escape(completed)}, CompletedOn = ${now()} WHERE Id = ${id};`)
-    return result.affectedRows > 0
-}
-
-export async function getAllTags() {
-    return await runDBCommand(`SELECT * FROM ${foodTags};`)
-}
-
-export async function addTag(tag, colourHex) {
-    const result = await runDBCommand(`INSERT INTO ${foodTags} (Name, Colour) VALUES (${escape(tag)}, ${escape(colourHex)})`)
-    return result.affectedRows > 0
-}
-
-export async function addFood(name, description, time, veg, tags) {
-    const result = await runDBCommand(`INSERT INTO ${foods} (Name, Description, Time, Veg) VALUES (${escape(name)}, ${escape(description)}, ${escape(time)}, ${veg ? 'TRUE' : 'FALSE'});`)
-
-    if(result.affectedRows > 0)
-        return await addTagsToFood(await runDBCommand('SELECT LAST_INSERT_ID();'), tags)
-
-    return false
-}
-
-export async function addTagsToFood(foodId, tags) {
-    const inserts = []
-    tags.forEach(tag => {
-        inserts.push(`(${foodId}, ${escape(tag)})`)
-    })
-
-    if(inserts.length > 0)
-    {
-        const result = await runDBCommand(`INSERT INTO ${foodTagRelations} (FoodId, TagID) VALUES ${escape(inserts.join(', '))};`)
-        return result.affectedRows > 0
+export async function renderUserInfoHandler(req, res) {
+    const email = req.params.email
+    if(email === undefined) {
+        return res.render('userinfo', {
+            user: undefined
+        })
     }
+    else {
+        if(!emailRegex.test(email))
+            return return400Response(req, res, 'Email was invalid')
 
-    return true
+        const rows = await runDBCommand(`SELECT name, email, auth FROM ${users} WHERE email = ${escape(email)};`)
+        if(rows.length !== 1)
+            return return400Response(req, res, 'Email was invalid')
+
+        return res.render('userinfo', {
+            user: rows[0]
+        })
+    }
 }
 
-export async function assignChefPerms(userId) {
-    const result = await runDBCommand(`UPDATE ${users} SET Tag = Tag | 2 WHERE ID = ${escape(userId)}`);
-    return result.affectedRows > 0
-}
+export async function setUserAuthHandler(req, res) {
+    const email = req.params.email
 
-export async function assignAdminPerms(userId) {
-    const result = await runDBCommand(`UPDATE ${users} SET Tag = Tag | 3 WHERE ID = ${escape(userId)}`);
-    return result.affectedRows > 0
+    if(!emailRegex.test(email))
+        return return400Response(req, res, 'Email was invalid')
+
+    const rows = await runDBCommand(`SELECT 1 FROM ${users} WHERE email = ${escape(email)};`)
+    if(rows.length !== 1)
+        return return400Response(req, res, 'Email was invalid')
+
+    const body = req.body;
+    if(body === undefined)
+        return return400Response(req, res, 'Bad Request')
+
+    const auth = body.auth
+    if(auth < 1 || auth > 7)
+        return return400Response(req, res, 'Bad Request: Invalid authorisation status')
+
+    await runDBCommand(`UPDATE ${users} SET auth = ${escape(auth)} WHERE email = ${escape(email)};`)
+
+    return res.sendStatus(200)
 }

@@ -21,6 +21,7 @@ import {
     updateSubordersStatusHandler,
     renderUserOrdersHandler, renderAllOrdersHandler
 } from "./handlers/orders.js";
+import {renderUserInfoHandler, setUserAuthHandler} from "./handlers/admin.js";
 
 const __dirname = import.meta.dirname;
 
@@ -59,6 +60,11 @@ app.post('/suborders/update', authorise, authoriseChef, updateSubordersStatusHan
 
 app.get('/orders/my/', authorise, renderUserOrdersHandler)
 app.get('/orders/all/', authorise, authoriseAdmin, renderAllOrdersHandler)
+
+app.get('/admin/userinfo', authorise, authoriseAdmin, renderUserInfoHandler)
+app.get('/admin/userinfo/:email', authorise, authoriseAdmin, renderUserInfoHandler)
+
+app.post('/admin/grant/:email', authorise, authoriseAdmin, setUserAuthHandler)
 
 app.use((req, res) => {
     return return400Response(req, res, 'Bad Request')
