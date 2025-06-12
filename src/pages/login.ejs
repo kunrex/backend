@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>Login</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap_css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
 
+    <link rel="stylesheet" href="/global.css"/>
     <link rel="stylesheet" href="/pages/login/styles.css"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,13 +26,13 @@
     </nav>
     <header class="masthead text-black align-content-center h-100">
         <div class="masthead-content">
-            <div class="container d-flex flex-column justify-content-center align-items-center bg-white rounded-5 p-5" style="max-width: 800px;">
+            <div id="main" class="container d-flex flex-column justify-content-center align-items-center bg-white rounded-5 p-4 p-md-5">
                 <div class="text-center">
                     <h1>
                         Almost ready for the best food in town!
                     </h1>
                 </div>
-                <form action="/auth" method="POST">
+                <form class="w-100" action="/auth" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" name="name" class="form-control" id="name" placeholder="Enter name">
@@ -47,9 +48,9 @@
                     <div class="text-center text-danger">
                         <%= error === undefined ? '' : error %>
                     </div>
-                    <div class="d-flex justify-content-around">
-                        <button type="submit" name="action" value="signup" class="btn btn-primary btn-xl rounded-pill me-4 mt-4">Sign Up</button>
-                        <button type="submit" name="action" value="login" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Log In</button>
+                    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 gap-md-5">
+                        <button type="submit" name="action" value="signup" class="btn btn-primary btn-xl rounded-pill">Sign Up</button>
+                        <button type="submit" name="action" value="login" class="btn btn-primary btn-xl rounded-pill">Log In</button>
                     </div>
                 </form>
             </div>
@@ -59,5 +60,6 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
+    <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

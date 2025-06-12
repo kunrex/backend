@@ -39,8 +39,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use(express.static(path.join(__dirname, 'assets')))
-app.use('/js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')))
-app.use('/css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
+app.use('/bootstrap_js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')))
+app.use('/bootstrap_css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'pages'))
