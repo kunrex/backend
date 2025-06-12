@@ -6,6 +6,19 @@ header.masthead {
     margin-top: 5rem;
 }
 
+.no-wrap {
+    white-space: nowrap;
+}
+
+
+.scroll {
+    max-height: 300px;
+}
+
+.main {
+    max-width: 800px;
+}
+
 @keyframes bobble {
     0% {
         transform: translateY(10px);
