@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Login</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap_css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
 
-    <link rel="stylesheet" href="/pages/add/styles.css"/>
+    <link rel="stylesheet" href="/global.css"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -32,7 +32,7 @@
                     </h1>
                     <hr class="w-100">
                 </div>
-                <div class="flex-grow-1 overflow-y-scroll no-wrap p-3 w-100">
+                <div class="flex-grow-1 overflow-y-scroll no-wrap p-3 mb-3 w-100">
                     <div class="w-100 scroll">
                         <div class="accordion w-100" id="accordionAdd">
                             <div class="accordion-item w-100">
@@ -90,16 +90,14 @@
                                     </button>
                                 </h2>
                                 <div id="collapseThree" class="accordion-collapse collapse w-100"  aria-labelledby="newTag" data-bs-parent="#accordionAdd">
-                                    <div class="accordion-body w-100 d-flex">
-                                        <div class="w-50 overflow-x-scroll no-wrap">
+                                    <div class="accordion-body w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center">
+                                        <div class="w-100 w-md-75 overflow-x-scroll no-wrap">
                                             <label for="createTagInput" class="form-label">New Tag</label>
+                                            <span class="text-danger fs-6" id="createTagError"></span>
                                             <input type="text" name="tag" class="form-control" id="createTagInput" placeholder="Enter New Tag" maxlength="50">
                                         </div>
-                                        <div class="w-25 d-flex justify-content-center align-items-end text-danger overflow-x-scroll no-wrap p-2">
-                                            <span id="createTagError"></span>
-                                        </div>
-                                        <div class="w-25 text-center overflow-x-scroll no-wrap">
-                                            <button id="createTagConfirm" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Confirm</button>
+                                        <div class="w-100 w-md-25 text-center overflow-x-scroll no-wrap">
+                                            <button id="createTagConfirm" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill">Confirm</button>
                                         </div>
                                     </div>
                                 </div>
@@ -112,15 +110,15 @@
                                 </h2>
                                 <div id="collapseFour" class="accordion-collapse collapse w-100" aria-labelledby="newItem" data-bs-parent="#accordionAdd">
                                     <div class="accordion-body w-100">
-                                        <div class="mb-3">
+                                        <div class="mb-3 w-100">
                                             <label for="addFoodName" class="form-label">Name</label>
                                             <input type="text" name="name" class="form-control" id="addFoodName" placeholder="Enter name" maxlength="100">
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3 w-100">
                                             <label for="addFoodDescription" class="form-label">Enter Description</label>
                                             <input type="text" name="description" class="form-control" id="addFoodDescription" placeholder="Enter Description" maxlength="300">
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3 w-100">
                                             <label for="addFoodPrice" class="form-label">Enter Price</label>
                                             <input type="number" name="price" class="form-control" id="addFoodPrice" min="0" placeholder="Enter Price">
                                         </div>
@@ -128,7 +126,7 @@
                                             <button id="addFoodVegetarian" onclick="setVegetarian()" class="btn text-success-emphasis text-bg-success fw-bold ms-1 me-1">Vegetarian</button>
                                             <button id="addFoodNonVegetarian" onclick="setNonVegetarian()" class="btn text-danger fw-bold ms-1 me-1">Non Vegetarian</button>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3 w-100">
                                             <label>Cooking Duration</label>
                                             <div class="d-flex justify-content-evenly">
                                                 <input id="addFoodHours" type="number" class="form-control ms-1 me-1" name="hours" min="0" max="24" step="1" placeholder="hh">
@@ -136,23 +134,23 @@
                                                 <input id="addFoodSeconds" type="number" class="form-control ms-1 me-1" name="seconds" min="0" max="59" step="1" placeholder="ss">
                                             </div>
                                         </div>
-                                        <div class="mb-3 d-flex justify-content-evenly">
-                                            <div class="w-75 overflow-x-scroll no-wrap">
+                                        <div class="mb-3 w-100 d-flex flex-column flex-md-row justify-content-evenly">
+                                            <div class="w-100 w-md-75 overflow-x-scroll no-wrap">
                                                 <label for="addFoodImageURL" class="form-label">Image Source</label>
                                                 <input type="url" name="image" class="form-control" id="addFoodImageURL" placeholder="Enter URL">
                                             </div>
-                                            <div class="w-25 text-center overflow-x-scroll no-wrap">
-                                                <button onclick="fetchImage()" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Fetch</button>
+                                            <div class="w-100 w-md-25 text-center overflow-x-scroll no-wrap">
+                                                <button onclick="fetchImage()" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill m-3">Fetch</button>
                                             </div>
                                         </div>
-                                        <div class="mb-3 form-control w-100 d-flex flex-column p-2">
+                                        <div class="mb-3 w-100 form-control d-flex flex-column p-2">
                                             <img id="addFoodImage" src="" class="w-100 h-auto">
                                         </div>
                                         <div class="mb-3 w-100 d-flex justify-content-center align-items-end text-danger overflow-x-scroll no-wrap p-2">
                                             <span id="addFoodError"></span>
                                         </div>
                                         <div class="mb-3 w-100 text-center">
-                                            <button onclick="addFoodConfirm()" class="btn btn-primary btn-xl rounded-pill me-4 mt-4">Confirm</button>
+                                            <button onclick="addFoodConfirm()" class="btn btn-primary btn-xl rounded-pill">Confirm</button>
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +159,7 @@
                     </div>
                 </div>
                 <div class="w-100 text-center">
-                    <button onclick="window.location.href = '/dashboard'" class="btn btn-primary btn-xl rounded-pill me-4 mt-4">Return</button>
+                    <button onclick="window.location.href = '/dashboard'" class="btn btn-primary btn-xl rounded-pill">Return</button>
                 </div>
             </div>
         </div>
@@ -170,7 +168,6 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
-    <script type="module" src="/js/bootstrap.bundle.min.js"></script>
     <script>
         const tags = <%- JSON.stringify(tags) %>
         const menu = <%- JSON.stringify(menu) %>
@@ -263,12 +260,12 @@
             const value = createTagInput.value.trim().toLowerCase()
 
             if(!value) {
-                createTagError.innerHTML = 'Tag is empty'
+                createTagError.innerHTML = '*Tag is empty'
                 return
             }
 
             if(tags.indexOf(value) >= 0) {
-                createTagError.innerHTML = 'Tag already exists'
+                createTagError.innerHTML = '*Tag already exists'
                 return
             }
 
@@ -367,5 +364,6 @@
             window.location.href = '/admin/add'
         }
     </script>
+    <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
