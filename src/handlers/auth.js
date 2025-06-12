@@ -132,7 +132,7 @@ export async function loginHandler(req, res) {
 export async function signOutHandler(req, res) {
     const user = req.user
 
-    await runDBCommand(`UPDATE ${users} SET refreshHash = NULL WHERE id = ${user.id};`)
+    await runDBCommand(`UPDATE ${users} SET refreshHash = NULL WHERE id = ${escape(user.id)};`)
     res.cookie(access, undefined)
     res.cookie(refresh, undefined)
 

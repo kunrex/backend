@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser'
 
 import { authMiddleware } from "./middleware/auth.js";
 import {authorise, authoriseAdmin, authoriseChef, return400Response} from "./services/utils.js";
-import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler} from "./handlers/auth.js";
+import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler, signOutHandler} from "./handlers/auth.js";
 import {dashboardHandler} from "./handlers/dashboard.js";
 import {
     newOrderHandler,
@@ -79,6 +79,8 @@ app.get('/admin/add', authorise, authoriseAdmin, renderAddHandler)
 app.post('/admin/add/food', authorise, authoriseAdmin, addFoodHandler)
 app.post('/admin/add/tags/add/:tag', authorise, authoriseAdmin, addTagHandler)
 app.post('/admin/add/tags/edit/:foodId', authorise, authoriseAdmin, editTagsHandler)
+
+app.get('/signout', authorise, signOutHandler)
 
 app.use((req, res) => {
     return return400Response(req, res, 'Bad Request')
