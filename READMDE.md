@@ -9,11 +9,15 @@ npm i dependencies
 
 Installs all dependencies
 
-#### 2. Database Set Up
+#### 2. Download bootstrap
+
+Download <a href="https://startbootstrap.com/theme/one-page-wonder">this bootstrap template</a> and place it under `src/assets` under the name `startbootstrap`
+
+#### 3. Database Set Up
 
 Run all commands in `src/db.sql` locally on mysql
 
-#### 3. .env Set up
+#### 4. .env Set up
 
 Define a file: `.env` in src with the format
 
@@ -30,6 +34,6 @@ DB_PASSWORD=<password>
 DB_NAME=backend
 ```
 
-#### 4. Run `src/app.js`
+#### 5. Run `src/app.js`
 
-#### 5. Enjoy :D
+#### 6. Enjoy :D
