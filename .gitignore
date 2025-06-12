@@ -3,3 +3,5 @@ src/.env
 node_modules/
 
 src/assets/startbootstrap/
+
+src/assets/foods/*
