@@ -145,7 +145,7 @@ export async function updateOrderHandler(req, res) {
     if(body === undefined)
         return return400Response(req, res, 'Bad Request: Body not defined')
 
-    if(isNaN(orderId) || (await runDBCommand(`SELECT 1 FROM ${orders} WHERE id = ${escape(orderId)} AND status = ${escape(completed)};`)).length === 0)
+    if(!Number.isInteger(orderId) || orderId < 0 || (await runDBCommand(`SELECT 1 FROM ${orders} WHERE id = ${escape(orderId)} AND status != ${escape(completed)};`)).length === 0)
         return return400Response(req, res, 'Bad Request: Order not found')
 
     const actions = body.actions
