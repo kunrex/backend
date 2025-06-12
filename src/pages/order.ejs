@@ -88,7 +88,7 @@
                                         <div class="mt-3 w-25 overflow-x-scroll no-wrap">
                                             <p class="card-text">Added by: <%= current.authorName %></p>
                                         </div>
-                                        <input type="text" name="instructions" class="ms-3 w-75 form-control" id="pwd" placeholder="<%- current.instructions === '' ? 'Instructions' : current.instructions %>" maxlength="300">
+                                        <input type="text" name="instructions" class="ms-3 w-75 form-control" placeholder="<%- current.instructions === '' ? 'Instructions' : current.instructions %>" maxlength="300">
                                     </div>
                                 </div>
                                 <div class="d-flex flex-row flex-sm-column justify-content-evenly align-items-center m-2">
@@ -188,81 +188,81 @@
     </script>
     <script>
         function createCard(name) {
-            const card = document.createElement("div")
-            card.className = "card w-100 mt-3 mb-3"
+            const card = document.createElement('div')
+            card.className = 'card w-100 mt-3 mb-3'
 
-            const row = document.createElement("div")
-            row.className = "row"
-            card.appendChild(row)
+            const container = document.createElement('div')
+            container.className = 'w-100 d-flex flex-column flex-sm-row justify-content-evenly'
 
-            const colLeft = document.createElement("div")
-            colLeft.className = "col d-flex flex-column justify-content-evenly align-items-baseline"
+            const left = document.createElement('div')
+            left.className = 'card-body w-100 d-flex flex-column justify-content-evenly align-items-baseline'
 
-            const cardBody = document.createElement("div")
-            cardBody.className = "card-body w-100"
+            const titleWrapper = document.createElement('div')
+            titleWrapper.className = 'w-100 overflow-x-scroll no-wrap'
 
-            const title = document.createElement("h3")
-            title.className = "card-title m-0"
+            const title = document.createElement('h3')
+            title.className = 'card-title m-0'
             title.textContent = name
 
-            const contentRow = document.createElement("div")
-            contentRow.className = "w-100 p-0 d-flex justify-content-evenly align-items-center"
+            titleWrapper.appendChild(title)
 
-            const addedByDiv = document.createElement("div")
-            addedByDiv.className = "mt-3 w-25 overflow-x-scroll no-wrap"
+            const instructionRow = document.createElement('div')
+            instructionRow.className = 'w-100 p-0 d-flex justify-content-evenly align-items-center'
 
-            const addedByText = document.createElement("p")
-            addedByText.className = "card-text"
-            addedByText.textContent = `Added by you!`
-            addedByDiv.appendChild(addedByText)
+            const authorWrapper = document.createElement('div')
+            authorWrapper.className = 'mt-3 w-25 overflow-x-scroll no-wrap'
 
-            const input = document.createElement("input")
-            input.type = "text"
-            input.name = "instructions"
-            input.className = "ms-3 w-75 form-control"
-            input.id = "pwd"
-            input.placeholder = "Instructions"
+            const authorText = document.createElement('p')
+            authorText.className = 'card-text'
+            authorText.textContent = `Added by you!`
+
+            authorWrapper.appendChild(authorText)
+
+            const input = document.createElement('input')
+            input.type = 'text'
+            input.name = 'instructions'
+            input.className = 'ms-3 w-75 form-control'
+            input.placeholder = ''
             input.maxLength = 300
 
-            contentRow.appendChild(addedByDiv)
-            contentRow.appendChild(input)
+            instructionRow.appendChild(authorWrapper)
+            instructionRow.appendChild(input)
 
-            cardBody.appendChild(title)
-            cardBody.appendChild(contentRow)
-            colLeft.appendChild(cardBody)
+            left.appendChild(titleWrapper)
+            left.appendChild(instructionRow)
 
-            const colRight = document.createElement("div")
-            colRight.className = "col-auto d-flex flex-column justify-content-center align-items-center me-2"
+            const right = document.createElement('div')
+            right.className = 'd-flex flex-row flex-sm-column justify-content-evenly align-items-center m-2'
 
-            const quantityRow = document.createElement("div")
-            quantityRow.className = "d-flex justify-content-center align-items-center"
+            const quantityControl = document.createElement('div')
+            quantityControl.className = 'd-flex justify-content-center align-items-center'
 
-            const plusIcon = document.createElement("i")
-            plusIcon.className = "bi bi-plus-lg m-1 icon-button"
-            plusIcon.dataset.status = "true"
+            const minusIcon = document.createElement('i')
+            minusIcon.className = 'bi bi-dash-lg m-1 icon-button'
 
-            const quantity = document.createElement("h6")
-            quantity.className = "m-1"
+            const quantity = document.createElement('h6')
+            quantity.className = 'm-1'
             quantity.textContent = '1'
 
-            const minusIcon = document.createElement("i")
-            minusIcon.className = "bi bi-dash-lg m-1 icon-button"
-            minusIcon.dataset.status = 'true'
+            const plusIcon = document.createElement('i')
+            plusIcon.className = 'bi bi-plus-lg m-1 icon-button'
 
-            quantityRow.appendChild(minusIcon);
-            quantityRow.appendChild(quantity);
-            quantityRow.appendChild(plusIcon);
+            quantityControl.appendChild(minusIcon)
+            quantityControl.appendChild(quantity)
+            quantityControl.appendChild(plusIcon)
 
-            const stateIcon = document.createElement("div")
-            const icon = document.createElement("i")
-            icon.className = "bi bi-list-ul fs-4 text-dark"
-            stateIcon.appendChild(icon)
+            const statusIconWrapper = document.createElement('div')
+            const statusIcon = document.createElement('i')
+            statusIcon.className = 'bi bi-list-ul fs-4 text-dark'
 
-            colRight.appendChild(quantityRow)
-            colRight.appendChild(stateIcon)
+            statusIconWrapper.appendChild(statusIcon)
 
-            row.appendChild(colLeft)
-            row.appendChild(colRight)
+            right.appendChild(quantityControl)
+            right.appendChild(statusIconWrapper)
+
+            container.appendChild(left)
+            container.appendChild(right)
+            card.appendChild(container)
 
             return [card, quantity, minusIcon, plusIcon, input]
         }

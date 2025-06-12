@@ -4,7 +4,7 @@ import { runDBCommand, escape, orders, foodTags, foods, foodTagRelations, subord
 export async function newOrderHandler(req, res) {
     const user = req.user
 
-    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND payedBy == NULL;`)
+    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND payedBy IS NULL;`)
     if(rows.length > 0)
         return res.redirect(`order/${rows[0].id}/${req.user.name}`)
 
