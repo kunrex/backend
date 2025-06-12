@@ -8,7 +8,7 @@ import {
     suborders,
     ordered, completed, users, processing
 } from "../services/db.js";
-import {between, now, return400Response, supportsJson} from "../services/utils.js";
+import {between, now, return400Response, returnJSON} from "../services/utils.js";
 
 export async function newOrderHandler(req, res) {
     const user = req.user
@@ -66,7 +66,7 @@ export async function renderOrderHandler(req, res) {
                                             INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
 
-    if(supportsJson(req))
+    if(returnJSON(req))
         return res.status(200).send({
             code: 200,
             orders: allSuborders

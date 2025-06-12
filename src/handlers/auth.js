@@ -1,7 +1,7 @@
 import { compare, hash } from "../services/hash.js";
 import { escape, runDBCommand, users } from "../services/db.js";
 import { accessRefreshTime, genAccessToken, genRefreshToken, verifyToken } from "../services/auth.js";
-import { between, access, refresh, return400Response, supportsJson, return40XResponse } from "../services/utils.js";
+import { between, access, refresh, return400Response, returnJSON, return40XResponse } from "../services/utils.js";
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -78,7 +78,7 @@ export async function signUpHandler(req, res) {
     res.cookie(access, accessToken)
     res.cookie(refresh, refreshToken)
 
-    if(supportsJson(req))
+    if(returnJSON(req))
         return res.status(200).json({
             code: 200,
             accessToken: accessToken,
@@ -118,7 +118,7 @@ export async function loginHandler(req, res) {
 
     user.refreshHash = hashedRefreshToken
 
-    if(supportsJson(req))
+    if(returnJSON(req))
         return res.status(200).json({
             code: 200,
             accessToken: accessToken,
@@ -136,7 +136,7 @@ export async function signOutHandler(req, res) {
     res.cookie(access, undefined)
     res.cookie(refresh, undefined)
 
-    if(supportsJson(req))
+    if(returnJSON(req))
         return res.status(200).json({
             code: 200,
             message: "Signed out successfully"
@@ -165,7 +165,7 @@ export async function accessRefreshHandler(req, res) {
     const accessToken = newAccessToken(user.email, user.auth)
     res.cookie(access, accessToken)
 
-    if(supportsJson(req))
+    if(returnJSON(req))
         return res.status(200).json({
             code: 200,
             accessToken: accessToken,
