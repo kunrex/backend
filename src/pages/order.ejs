@@ -20,13 +20,14 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link">Order: <%= orderId %></a></li>
+                    <li class="nav-item text-center"><a class="nav-link" href="#menu_card_parent">Menu</a></li>
+                    <li class="nav-item text-center"><a class="nav-link" href="#order_card_parent">Order: <%= orderId %></a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="vw-100 vh-100 d-flex flex-column flex-xl-row justify-content-evenly align-items-center p-5">
-        <div class="card w-100 w-xl-50 m-4 parent-card">
+        <div id="menu_card_parent" class="card w-100 w-xl-50 m-4 parent-card">
             <div class="card-body h-100 d-flex flex-column justify-content-start">
                 <h3>Menu</h3>
                 <hr>
@@ -70,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div class="card w-100 w-xl-50 m-4 parent-card">
+        <div id="order_card_parent" class="card w-100 w-xl-50 m-4 parent-card">
             <div class="card-body h-100 d-flex flex-column justify-content-start">
                 <h3>Order Details</h3>
                 <hr>
