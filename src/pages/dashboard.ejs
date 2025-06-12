@@ -25,30 +25,27 @@
         </div>
     </nav>
     <div id="options" class="d-flex flex-column justify-content-center align-content-center mt-6 p-5">
-        <div class="ps-5 pe-5">
-            <h1>Customer Options</h1>
-            <hr>
-        </div>
-        <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center p-5">
-            <div class="card container p-0">
-                <img src="/startbootstrap/assets/img/01.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h4 class="card-title">Card title</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Subtitle</h6>
-                    <p class="card-text">Some text inside the card.</p>
-                    <a href="#" class="card-link">Link 1</a>
-                    <a href="#" class="card-link">Link 2</a>
-                </div>
+        <% for (let i = 0; i < options.length; i++ ) { %>
+            <% const current = options[i] %>
+            <div class="ps-5 pe-5">
+                <h1><%= current.name %> Options</h1>
+                <hr>
             </div>
-            <div class="card container p-0">
-                <img src="/startbootstrap/assets/img/01.jpg" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h4 class="card-title">Card title</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Subtitle</h6>
-                    <p class="card-text">Some text inside the card.</p>
-                </div>
+            <% const currentOptions = current.options %>
+            <div class="d-flex flex-sm-row flex-column justify-content-center align-items-center p-5">
+                <% for(let j = 0; j < currentOptions.length; j++) { %>
+                    <% const option = currentOptions[j] %>
+                    <div onclick="window.location.href = '<%= option.onclick %>'" class="card container p-0">
+                        <img src="<%= option.img %>" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h4 class="card-title"><%= option.title %></h4>
+                            <h6 class="card-subtitle mb-2 text-muted"><%= option.subtitle %></h6>
+                            <p class="card-text"><%= option.text %></p>
+                        </div>
+                    </div>
+                <% } %>
             </div>
-        </div>
+        <% } %>
     </div>
 </body>
 </html>

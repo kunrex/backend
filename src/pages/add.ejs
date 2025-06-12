@@ -316,11 +316,6 @@
             }
         }
 
-        function asHHMMSS(hours, minutes, seconds) {
-            const pad = n => String(n).padStart(2, '0');
-            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        }
-
         async function addFoodConfirm() {
             addFoodError.innerHTML = ''
 
@@ -350,7 +345,7 @@
                 return
             }
 
-            console.log(asHHMMSS(hours, minutes, seconds))
+            const pad = n => String(n).padStart(2, '0');
 
             await fetch('/admin/add/food', {
                 method: 'POST',
@@ -363,7 +358,7 @@
                     description: description,
 
                     veg: isVegetarian,
-                    cookTime: asHHMMSS(hours, minutes, seconds),
+                    cookTime: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
 
                     image: addFoodImage.src
                 })

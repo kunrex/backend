@@ -4,4 +4,11 @@
 
 .card.container {
     max-width: 400px;
+    cursor: pointer;
+}
+
+.card-img-top {
+    max-height: 300px;
+    width: auto;
+    object-fit: contain;
 }

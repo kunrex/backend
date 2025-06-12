@@ -15,7 +15,7 @@ export async function newOrderHandler(req, res) {
 
     const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND status != ${escape(completed)};`)
     if(rows.length > 0)
-        return res.redirect(`orders/${rows[0].id}`)
+        return res.redirect(`order/${rows[0].id}/${req.user.name}`)
 
     const result = await runDBCommand(`INSERT INTO ${orders} (createdBy, status, createdOn) VALUES (
         ${escape(user.id)},
@@ -23,7 +23,7 @@ export async function newOrderHandler(req, res) {
         ${escape(now())}
     );`)
 
-    return res.redirect(`/order/${result.insertId}`)
+    return res.redirect(`/order/${result.insertId}/${req.user.name}`)
 }
 
 export const tags = await runDBCommand(`SELECT name FROM ${foodTags};`)
