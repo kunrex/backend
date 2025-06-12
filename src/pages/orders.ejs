@@ -25,13 +25,13 @@
     </nav>
     <header class="masthead text-black align-content-center h-100">
         <div class="masthead-content h-100">
-            <div class="h-100 w-100 container bg-white rounded-5 p-5" >
+            <div class="main h-100 w-100 container bg-white rounded-5 p-5" >
                 <div class="text-center w-100">
                     <h2><%= allowJoin ? 'Your Orders' : 'All Orders' %></h2>
                     <hr>
                 </div>
-                <div class="flex-grow-1 d-flex flex-column justify-content-start align-items-center overflow-y-scroll no-wrap p-3">
-                    <div id="orders-parent" class="w-100 scroll form-control">
+                <div class="flex-grow-1 d-flex flex-column justify-content-start align-items-center overflow-y-scroll no-wrap form-control p-3 mb-3">
+                    <div id="orders-parent" class="w-100 scroll">
                         <% if (orders.length > 0) { %>
                             <% for(let i = 0; i < orders.length; i++ ) { %>
                                 <% const current = orders[i] %>
