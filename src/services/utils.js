@@ -1,5 +1,5 @@
-import {verifyToken} from "./auth.js";
-import {runDBCommand, users, escape} from "./db.js";
+import { verifyToken } from "./auth.js";
+import { runDBCommand, users, escape } from "./db.js";
 
 export const access = 'awt'
 export const refresh = 'rwt'

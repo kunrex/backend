@@ -5,28 +5,12 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 
 import { authMiddleware } from "./middleware/auth.js";
-import {authorise, authoriseAdmin, authoriseChef, return400Response} from "./services/utils.js";
-import {accessRefreshHandler, loginPageErrorHandler, loginPageHandler, signOutHandler} from "./handlers/auth.js";
-import {dashboardHandler} from "./handlers/dashboard.js";
-import {
-    newOrderHandler,
-    renderOrderHandler,
-    completeOrderHandler,
-    renderPaymentHandler,
-    updateOrderHandler,
-    confirmPaymentHandler,
-    renderIncompleteSubordersHandler,
-    updateSubordersStatusHandler,
-    renderUserOrdersHandler, renderAllOrdersHandler
-} from "./handlers/orders.js";
-import {
-    addFoodHandler,
-    addTagHandler,
-    editTagsHandler,
-    renderAddHandler,
-    renderUserInfoHandler,
-    setUserAuthHandler
-} from "./handlers/admin.js";
+
+import { dashboardHandler } from "./handlers/dashboard.js";
+import { authorise, authoriseAdmin, authoriseChef, return400Response } from "./services/utils.js";
+import { accessRefreshHandler, loginPageErrorHandler, loginPageHandler, signOutHandler } from "./handlers/auth.js";
+import { addFoodHandler, addTagHandler, editTagsHandler, renderAddHandler, renderUserInfoHandler, setUserAuthHandler } from "./handlers/admin.js";
+import { newOrderHandler, renderOrderHandler, completeOrderHandler, renderPaymentHandler, updateOrderHandler, confirmPaymentHandler, renderIncompleteSubordersHandler, updateSubordersStatusHandler, renderUserOrdersHandler, renderAllOrdersHandler } from "./handlers/orders.js";
 
 const __dirname = import.meta.dirname;
 

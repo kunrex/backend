@@ -1,14 +1,5 @@
-import {
-    runDBCommand,
-    escape,
-    orders,
-    foodTags,
-    foods,
-    foodTagRelations,
-    suborders,
-    ordered, completed, users, processing
-} from "../services/db.js";
-import {between, now, return400Response, returnJSON} from "../services/utils.js";
+import { between, now, return400Response, returnJSON } from "../services/utils.js";
+import { runDBCommand, escape, orders, foodTags, foods, foodTagRelations, suborders, ordered, completed, users, processing } from "../services/db.js";
 
 export async function newOrderHandler(req, res) {
     const user = req.user

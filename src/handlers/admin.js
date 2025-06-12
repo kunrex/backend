@@ -1,10 +1,12 @@
-import {runDBCommand, users, escape, foods, foodTagRelations, foodTags} from "../services/db.js";
-import {between, return400Response} from "../services/utils.js";
-import {emailRegex} from "./auth.js";
-import {tags, menu, addTag, addFood, updateFoodTags} from "./orders.js";
-import axios from "axios";
 import fs from "fs";
 import path from "path";
+import axios from "axios";
+
+import { between, return400Response } from "../services/utils.js";
+import { runDBCommand, users, escape, foods, foodTagRelations, foodTags } from "../services/db.js";
+
+import { emailRegex } from "./auth.js";
+import { tags, menu, addTag, addFood, updateFoodTags } from "./orders.js";
 
 export async function renderUserInfoHandler(req, res) {
     const email = req.params.email
