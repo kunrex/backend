@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Login</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap_css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
+    <link rel="stylesheet" href="/global.css"/>
     <link rel="stylesheet" href="/pages/userinfo/styles.css"/>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,14 +19,14 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link">Log In</a></li>
+                    <li class="nav-item"><a class="nav-link">User Info</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <header class="masthead text-black align-content-center h-100">
         <div class="masthead-content h-100">
-            <div class="h-100 w-100 container bg-white rounded-5 p-5 mb-4" >
+            <div class="main h-100 w-100 container bg-white rounded-5 p-5 mb-4" >
                 <div class="text-center w-100 mb-5">
                     <h2>
                         User Info
@@ -36,26 +36,24 @@
                 <div class="flex-grow-1 w-100 overflow-y-scroll no-wrap">
                     <% if (user === undefined) { %>
                         <div class="w-100 scroll">
-                            <form class="d-flex justify-content-evenly align-items-center">
-                                <div>
+                            <form class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center mb-3">
+                                <div class="w-100 w-md-75 my-2 mx-5">
                                     <label for="email" class="form-label">User Email</label>
                                     <input type="email" name="email" class="form-control" id="email" placeholder="Enter User Email">
                                 </div>
-                                <button type="submit" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Fetch User</button>
+                                <button type="submit" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill">Fetch User</button>
                             </form>
                             <div class="w-100 text-center">
-                                <button id="cancel" class="btn btn-primary text-primary-emphasis text-bg-primary btn-xl rounded-pill me-4 mt-4">Cancel</button>
+                                <button id="cancel" class="btn btn-primary text-primary-emphasis text-bg-primary btn-xl rounded-pill">Cancel</button>
                             </div>
                         </div>
                     <% } else { %>
-                        <div class="w-100 d-flex justify-content-evenly">
-                            <div class="w-25 text-center overflow-x-scroll no-wrap">
+                        <div class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center p-3">
+                            <div class="w-100 w-md-50 w-md-50 d-flex flex-column justify-content-evenly align-items-lg-baseline overflow-x-scroll no-wrap my-2 p-3">
                                 <h3> <%= user.name %> </h3>
-                            </div>
-                            <div class="w-25 text-center form-control overflow-x-scroll no-wrap">
                                 <h5> <%= user.email %> </h5>
                             </div>
-                            <div class="w-150 d-flex justify-content-evenly overflow-x-scroll no-wrap">
+                            <div class="w-100 w-md-50 d-flex justify-content-evenly overflow-x-scroll no-wrap my-2">
                                 <% const auth = user.auth %>
                                 <span class="p-2 rounded-2 text-center text-dark-emphasis text-bg-dark fw-bold ms-1 me-1">Customer</span>
                                 <% if ((auth & 2) === 2) { %>
@@ -70,9 +68,9 @@
                                 <% } %>
                             </div>
                         </div>
-                        <div class="w-100 d-flex justify-content-evenly mt-3">
-                            <button id="confirm" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Confirm</button>
-                            <button id="cancel" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Cancel</button>
+                        <div class="w-100 d-flex flex-column flex-sm-row justify-content-evenly align-items-center">
+                            <button id="confirm" class="btn btn-primary btn-xl rounded-pill m-2">Confirm</button>
+                            <button onclick="window.location.href = '/dashboard'" class="btn btn-primary btn-xl rounded-pill m-2">Cancel</button>
                         </div>
                     <% } %>
                 </div>
@@ -142,12 +140,6 @@
             }
         </script>
     <% } %>
-    <script>
-        const cancelButton = document.getElementById('cancel')
-
-        cancelButton.onclick = async () => {
-            window.location.href = '/dashboard'
-        }
-    </script>
+    <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
