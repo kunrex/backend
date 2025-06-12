@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Login</title>
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap_css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/startbootstrap/css/styles.css"/>
 
-    <link rel="stylesheet" href="/pages/pay/styles.css"/>
+    <link rel="stylesheet" href="/global.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -18,7 +18,7 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link">Log In</a></li>
+                    <li class="nav-item"><a class="nav-link">Pay: <%= orderId %></a></li>
                 </ul>
             </div>
         </div>
@@ -46,7 +46,7 @@
                             Tip (Optional)
                         </h5>
                     </div>
-                    <div class="d-flex justify-content-evenly align-items-center w-100 p-0 mb-2">
+                    <div class="d-flex justify-content-evenly align-items-center w-100 overflow-x-scroll no-wrap p-0 mb-2">
                         <button onclick="setTip(this, 0)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="selected">NONE</button>
                         <button onclick="setTip(this, 10)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="">₹10</button>
                         <button onclick="setTip(this, 50)" class="btn btn-secondary btn-lg rounded-pill text-light-emphasis fw-bold ms-4 mt-4" data-status="">₹50</button>
@@ -61,7 +61,7 @@
                             <span id="total" class="fs-5"></span><strong><%= discount === 0 ? '' : `(${discount}% discount)` %></strong>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-evenly align-items-center w-100 mt-2">
+                    <div class="d-flex flex-column flex-md-row justify-content-evenly align-items-center w-100 mt-2">
                         <button id="pay" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Pay</button>
                         <button id="cancel" value="login" class="btn btn-primary btn-xl rounded-pill ms-4 mt-4">Cancel</button>
                     </div>
@@ -107,7 +107,16 @@
 
         payButton.onclick = async () => {
             await fetch(`/pay/confirm/${orderId}`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tip: tip,
+                    total: total,
+                    subtotal: subtotal,
+                    discount: discount
+                })
             })
 
             window.location.href = `/dashboard`
@@ -117,5 +126,6 @@
             window.location.href = `/order/${orderId}`
         }
     </script>
+    <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

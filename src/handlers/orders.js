@@ -266,7 +266,7 @@ export async function confirmPaymentHandler(req, res) {
                           tip = ${escape(tip)},
                           total = ${escape(total)},
                           subtotal = ${escape(subtotal)},
-                          discount = ${escape(discount)},
+                          discount = ${escape(discount)}
                           WHERE id = ${escape(orderId)};`)
 
     return res.sendStatus(200)
