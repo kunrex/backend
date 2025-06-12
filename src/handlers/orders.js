@@ -13,7 +13,7 @@ import {between, now, return400Response, supportsJson} from "../services/utils.j
 export async function newOrderHandler(req, res) {
     const user = req.user
 
-    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND status != ${escape(completed)};`)
+    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND payedBy != NULL;`)
     if(rows.length > 0)
         return res.redirect(`order/${rows[0].id}/${req.user.name}`)
 

@@ -380,6 +380,9 @@
                         addItem(i)
                     }
                 }
+            else
+                for(let i = 0; i < menuChildren.length; i++)
+                    menuChildren[i].querySelector('button').disabled = true
 
             const ordersChildren = ordersParent.children
             for(let i = 0; i < ordersChildren.length; i++) {
