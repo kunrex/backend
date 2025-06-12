@@ -18,14 +18,14 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item text-center"><a class="nav-link" href="#main"><%= allowJoin ? 'Your Orders' : 'All Orders' %></a></li>
+                    <li class="nav-item text-center"><a class="nav-link"><%= allowJoin ? 'Your Orders' : 'All Orders' %></a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <header class="masthead text-black align-content-center h-100">
         <div class="masthead-content h-100">
-            <div id="main" class="main h-100 w-100 container bg-white rounded-5 p-5" >
+            <div class="main h-100 w-100 container bg-white rounded-5 p-5" >
                 <div class="text-center w-100">
                     <h2><%= allowJoin ? 'Your Orders' : 'All Orders' %></h2>
                     <hr>
@@ -74,7 +74,7 @@
                         <h2>Join an Order</h2>
                         <hr>
                     </div>
-                    <form class="d-flex flex-column flex-md-row justify-content-evenly align-items-center">
+                    <form class="d-flex flex-column flex-md-row justify-content-evenly align-items-center mb-3">
                         <div class="mb-3 mb-md-0">
                             <label for="id" class="form-label">Order ID</label>
                             <input type="number" name="id" class="form-control" id="id" placeholder="Enter Order ID">
@@ -85,7 +85,10 @@
                         </div>
                         <button type="submit" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill me-4 mt-4">Join Order</button>
                     </form>
-                <% } else { } %>
+                <% } %>
+                <div class="w-100 text-center">
+                    <button onclick="window.location.href = '/dashboard'" class="btn btn-primary btn-xl rounded-pill m-2">Return</button>
+                </div>
             </div>
         </div>
         <div class="bg-circle-1 bg-circle bobble-effect-10"></div>

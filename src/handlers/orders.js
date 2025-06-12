@@ -1,10 +1,10 @@
-import { between, now, return400Response, returnJSON } from "../services/utils.js";
+import { between, now, return400Response, acceptsJSON } from "../services/utils.js";
 import { runDBCommand, escape, orders, foodTags, foods, foodTagRelations, suborders, ordered, completed, users, processing } from "../services/db.js";
 
 export async function newOrderHandler(req, res) {
     const user = req.user
 
-    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND payedBy != NULL;`)
+    const rows = await runDBCommand(`SELECT id FROM ${orders} WHERE createdBy = ${escape(user.id)} AND payedBy == NULL;`)
     if(rows.length > 0)
         return res.redirect(`order/${rows[0].id}/${req.user.name}`)
 
@@ -57,7 +57,7 @@ export async function renderOrderHandler(req, res) {
                                             INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
 
-    if(returnJSON(req))
+    if(acceptsJSON(req))
         return res.status(200).send({
             code: 200,
             orders: allSuborders

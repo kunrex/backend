@@ -12,12 +12,16 @@ export function between(val, min, max) {
     return min <= val && val <= max
 }
 
-export function returnJSON(req) {
-    return req.method !== 'GET'
+export function acceptsJSON(req) {
+    const header = req.header('Accept')
+    if(header !== undefined)
+        return header.includes('application/json')
+
+    return false
 }
 
 export function return40XResponse(code, req, res, error) {
-    if(returnJSON(req))
+    if(acceptsJSON(req))
         return res.status(401).json({
             code: code,
             error: error
