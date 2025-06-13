@@ -43,8 +43,14 @@
                                 </h2>
                                 <div id="collapseOne" class="accordion-collapse collapse w-100" aria-labelledby="allTags" data-bs-parent="#accordionAdd">
                                     <div class="accordion-body w-100 overflow-x-scroll no-wrap">
-                                        <% for (let i = 0; i < tags.length; i++) { %>
-                                            <span class="p-2 rounded-2 text-center text-warning-emphasis text-bg-warning fw-bold ms-1 me-1"><%= tags[i] %></span>
+                                        <% if (tags.length > 0) { %>
+                                            <% for (let i = 0; i < tags.length; i++) { %>
+                                                <span class="p-2 rounded-2 text-center text-warning-emphasis text-bg-warning fw-bold ms-1 me-1"><%= tags[i] %></span>
+                                            <% } %>
+                                        <% } else { %>
+                                            <div class="w-100 text-center text-dark-emphasis p5">
+                                                <h4>No Tags</h4>
+                                            </div>
                                         <% } %>
                                     </div>
                                 </div>
@@ -73,8 +79,14 @@
                                             </h5>
                                         </div>
                                         <div id="editTagButtons" class="w-100 overflow-x-scroll no-wrap mb-3 p-2">
-                                            <% for (let i = 0; i < tags.length; i++) { %>
-                                                <button disabled onclick="toggleTag('<%- tags[i] %>', this)" class="btn text-warning fw-bold ms-1 me-1" data-tag="<%= tags[i] %>"><%= tags[i] %></button>
+                                            <% if (tags.length > 0) { %>
+                                                <% for (let i = 0; i < tags.length; i++) { %>
+                                                    <button disabled onclick="toggleTag('<%- tags[i] %>', this)" class="btn text-warning fw-bold ms-1 me-1" data-tag="<%= tags[i] %>"><%= tags[i] %></button>
+                                                <% } %>
+                                            <% } else { %>
+                                                <div class="w-100 text-center text-dark-emphasis p5">
+                                                    <h4>No Tags</h4>
+                                                </div>
                                             <% } %>
                                         </div>
                                         <div class="w-100 text-center">
@@ -215,6 +227,9 @@
         }
 
         editTagItems.onchange = (e) => {
+            if(tags.length === 0)
+                return
+
             const value = e.target.value
             const item =  menu.find(x => x.name === value)
 
@@ -223,14 +238,14 @@
 
             selectedTags.splice(0, selectedTags.length)
 
-            const tags = item.tags
+            const itemTags = item.tags
             for(let i = 0; i < editTagButtons.length; i++) {
                 const button = editTagButtons[i]
 
                 button.disabled = false
                 const tag = button.dataset.tag
 
-                if(tags.includes(tag))
+                if(itemTags.includes(tag))
                 {
                     selectedTags.push(tag)
                     button.classList = 'btn text-warning-emphasis text-bg-warning fw-bold ms-1 me-1'
