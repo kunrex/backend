@@ -2,8 +2,6 @@ src/.env
 .idea/
 node_modules/
 
-src/assets/startbootstrap/
-
 src/assets/foods/*
 
 .DS_Store
