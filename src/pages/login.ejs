@@ -35,18 +35,21 @@
                 <form class="w-100" action="/auth" method="POST">
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Enter name">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Enter name" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="Enter email">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Enter email" required>
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Password</label>
                         <div class="progress m-2">
                             <div id="strength" class="progress-bar"></div>
                         </div>
-                        <input type="password" name="password" class="form-control" id="pwd" placeholder="Password">
+                        <input type="password" name="password" class="form-control" id="pwd" placeholder="Password" required>
+                    </div>
+                    <div class="mb-3 w-100 overflow-x-scroll no-wrap">
+                        <span id="strengthText" class="text-danger"></span>
                     </div>
                     <div class="text-center text-danger">
                         <%= error === undefined ? '' : error %>
@@ -65,23 +68,37 @@
     </header>
     <script>
         const passwordInput = document.getElementById('pwd')
+
         const strengthBar = document.getElementById('strength')
+        const strengthText = document.getElementById('strengthText')
 
         const colours = ['progress-bar bg-danger', 'progress-bar bg-danger', 'progress-bar bg-warning', 'progress-bar bg-success', 'progress-bar bg-success']
 
         function checkpassword(password) {
-            var strength = 0;
+            var strength = 0
             if (password.match(/[a-z]+/))
-                strength += 1;
+                strength += 1
             if (password.match(/[A-Z]+/))
-                strength += 1;
+                strength += 1
             if (password.match(/[0-9]+/))
-                strength += 1;
+                strength += 1
             if (password.match(/[$@#&!]+/))
-                strength += 1;
-
+                strength += 1
             if (password.length >= 8)
                 strength += 1
+
+            if(strength === 0)
+                strengthText.innerHTML = ''
+            else if(strength < 5)
+            {
+                strengthText.innerHTML = 'Recommended length is at least 8 characters with numbers, symbols and both case letters'
+                strengthText.className = 'text-danger'
+            }
+            else
+            {
+                strengthText.innerHTML = 'Strong Password'
+                strengthText.className = 'text-success'
+            }
 
             strengthBar.className = colours[strength - 1]
             strengthBar.style.width = (strength * 20) + '%'
