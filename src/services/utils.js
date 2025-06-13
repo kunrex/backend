@@ -22,7 +22,7 @@ export function acceptsJSON(req) {
 
 export function return40XResponse(code, req, res, error) {
     if(acceptsJSON(req))
-        return res.status(401).json({
+        return res.status(code).json({
             code: code,
             error: error
         })
@@ -83,10 +83,10 @@ export async function authorise(req, res, next) {
 
 export async function authoriseChef(req, res, next) {
     const auth = req.user.auth
-    return (auth & 2) === 2 ? next() : return40XResponse(401, req, res, 'Permission Denied')
+    return (auth & 2) === 2 ? next() : return40XResponse(401, req, res, 'Bad Request: Permission Denied')
 }
 
 export async function authoriseAdmin(req, res, next) {
     const auth = req.user.auth
-    return (auth & 4) === 4 ? next() : return40XResponse(401, req, res, 'Permission Denied')
+    return (auth & 4) === 4 ? next() : return40XResponse(401, req, res, 'Bad Request: Permission Denied')
 }

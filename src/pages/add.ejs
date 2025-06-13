@@ -259,6 +259,7 @@
                 await fetch(`/admin/add/tags/edit/${item.id}`, {
                     method: 'POST',
                     headers: {
+                        'Accept' : 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
@@ -286,6 +287,9 @@
 
             await fetch(`/admin/add/tags/add/${value}`, {
                 method: 'POST',
+                headers: {
+                    'Accept' : 'application/json',
+                }
             })
 
             createTagInput.value = ''
@@ -362,6 +366,7 @@
             await fetch('/admin/add/food', {
                 method: 'POST',
                 headers: {
+                    'Accept' : 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({

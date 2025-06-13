@@ -366,6 +366,7 @@
                 await fetch(`/order/update/${orderId}`, {
                     method: `POST`,
                     headers: {
+                        'Accept' : 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
@@ -448,7 +449,10 @@
 
             completeButton.onclick = async () => {
                 await fetch(`/order/complete/${orderId}`, {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Accept' : 'application/json'
+                    }
                 })
                 window.location.href = '/dashboard'
             }

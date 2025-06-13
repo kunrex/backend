@@ -109,6 +109,7 @@
             await fetch(`/pay/confirm/${orderId}`, {
                 method: 'POST',
                 headers: {
+                    'Accept' : 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
