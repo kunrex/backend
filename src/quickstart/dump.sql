@@ -100,8 +100,3 @@ UNLOCK TABLES;
 --
 -- Table structure for table `Orders`
 --
-
--- Move all images from src/quickstart/foods to src/assets/foods
-
--- (Optional); Users with not have admin perms by default, run this command to grant all perms to a user
-UPDATE Users SET auth = 7 WHERE email = '<email>';

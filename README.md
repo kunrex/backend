@@ -2,25 +2,43 @@
 
 Submission to backend assignment
 
-#### 1. Install Dependencies
-```js
-npm i
+#### 1. Create the .env file
+
+Rename `src/exmaple.env` to `.env` and fill in the appropriate values. 
+
+An example:
+```env
+APP_PORT=3000
+
+JWT_SECRET=SuperHardStringToGuess1234556789$%^&*
+
+SALT_ROUNDS=10
+
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=superhardpasswordtoguess123456789$%^&*
+DB_NAME=backend # !!Unchanged
 ```
 
-Installs all dependencies
+#### 2. Initialising the database
 
-#### 2. Database Set Up
+```npm
+npm run initialise
+```
 
-Run all the commands in `src/db.sql`
+> Alternative: Run `src/db.sql` locally using your MySQL credentials
 
-#### 3. .env Set up
+#### 3. (Optional) Quickstart
 
-Edit the file: `src/example.env` and fill in appropriate values wherever necessary. Rename it to `.env`
+```npm
+npm run quickstart
+```
 
-#### 4. Run `src/app.js`
+> Sets up 21 predefined food items and tags, and creates an `Admin User` with credentials:
+> 1. Name: admin
+> 2. Email: admin@backend.com
+> 3. Password: adminpassword123
 
-#### 5. (Optional) Quickstart 
+> Alternative: Run `src/quickstart/dump.sql` locally using your MySQL credentials, move all images from `src/quickstart/foods` to `src/assets/foods` and run a DB command to grant `auth = 7` for a user of of choice.
 
-Follow all the commands in `src/quickstart/dump.sql` locally on mysql. Make sure to move the images too.
-
-#### 6. Enjoy :D
+#### 4. Enjoy :D
