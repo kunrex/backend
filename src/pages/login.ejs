@@ -43,6 +43,9 @@
                     </div>
                     <div class="mb-3">
                         <label for="pwd" class="form-label">Password</label>
+                        <div class="progress m-2">
+                            <div id="strength" class="progress-bar"></div>
+                        </div>
                         <input type="password" name="password" class="form-control" id="pwd" placeholder="Password">
                     </div>
                     <div class="text-center text-danger">
@@ -60,6 +63,34 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
+    <script>
+        const passwordInput = document.getElementById('pwd')
+        const strengthBar = document.getElementById('strength')
+
+        const colours = ['progress-bar bg-danger', 'progress-bar bg-danger', 'progress-bar bg-warning', 'progress-bar bg-success', 'progress-bar bg-success']
+
+        function checkpassword(password) {
+            var strength = 0;
+            if (password.match(/[a-z]+/))
+                strength += 1;
+            if (password.match(/[A-Z]+/))
+                strength += 1;
+            if (password.match(/[0-9]+/))
+                strength += 1;
+            if (password.match(/[$@#&!]+/))
+                strength += 1;
+
+            if (password.length >= 8)
+                strength += 1
+
+            strengthBar.className = colours[strength - 1]
+            strengthBar.style.width = (strength * 20) + '%'
+        }
+
+        passwordInput.onkeyup = (e) => {
+            checkpassword(e.target.value)
+        }
+    </script>
     <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
