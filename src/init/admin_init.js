@@ -18,7 +18,7 @@ try
         await runDBCommand(`INSERT INTO ${users} (name, email, pwdHash, refreshHash, auth) VALUES (
             'admin',
             'admin@backend.com',
-            ${escape(await hash('adminpassword123'))}
+            ${escape(await hash('adminpassword123'))},
             ${escape(await hash(genRefreshToken({
                 email: 'admin@backend.com'
             })))},
