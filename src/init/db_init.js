@@ -6,12 +6,6 @@ import { runDBCommand } from "../services/db.js";
 try
 {
     async function init() {
-        if(!fs.existsSync('../.env'))
-        {
-            console.log('.env not found')
-            return
-        }
-
         const args = process.argv.slice(2)
         if(args.length < 1) {
             console.log('Expected name of sql file')
