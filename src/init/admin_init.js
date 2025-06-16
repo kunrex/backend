@@ -9,7 +9,7 @@ import { runDBCommand, users, escape } from "../services/db.js";
 try
 {
     async function init() {
-        if(!fs.existsSync('.env'))
+        if(!fs.existsSync('../.env'))
         {
             console.log('.env not found')
             return
