@@ -112,6 +112,14 @@
                     <% } %>
                 </div>
                 <div class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center">
+                    <div class="w-100 w-md-50 overflow-x-scroll no-wrap d-flex justify-content-center justify-content-md-start p-2">
+                        <h3>Subtotal</h3>
+                    </div>
+                    <div class="w-100 w-md-50 overflow-x-scroll no-wrap d-flex justify-content-center justify-content-md-end p-2">
+                        <h4 id="subtotal"></h4>
+                    </div>
+                </div>
+                <div class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center">
                     <button id="confirm" class="btn btn-primary btn-xl rounded-pill m-2">Confirm</button>
                     <button id="complete" class="btn btn-primary btn-xl rounded-pill m-2">Complete</button>
                     <button id="pay" class="btn btn-primary btn-xl rounded-pill m-2">Pay</button>
@@ -139,6 +147,9 @@
         }
 
         const ordersParent = document.getElementById('orders-parent')
+
+        let subtotal = 0
+        const subtotalText = document.getElementById('subtotal')
     </script>
     <script>
         tagChildren[0].onclick = () => {
@@ -187,6 +198,11 @@
         }
     </script>
     <script>
+        function renderSubtotal(value) {
+            subtotal = value
+            subtotalText.innerHTML = `₹${subtotal}`
+        }
+
         function createCard(name) {
             const card = document.createElement('div')
             card.className = 'card w-100 mt-3 mb-3'
@@ -287,7 +303,8 @@
                 quantity: 1,
                 instructions: '',
                 status: 'ordered',
-                state: 2
+                state: 2,
+                price: item.price
             }
 
             const htmlElements = createCard(item.name)
@@ -310,6 +327,7 @@
                 order.status = 1
             }
 
+            renderSubtotal(subtotal + item.price)
             orders[orders.length] = order
         }
 
@@ -318,6 +336,8 @@
                 order.state = 1
 
             order.quantity += 1
+            renderSubtotal(subtotal + order.price)
+
             order.quantityText.style.color = 'black'
             order.decreaseButton.dataset.status = 'true'
             order.quantityText.innerHTML = order.quantity.toString()
@@ -331,6 +351,7 @@
                 order.state = 1
 
             order.quantity -= 1
+            renderSubtotal(subtotal - order.price)
 
             if (order.quantity === 0) {
                 order.quantityText.style.color = 'red'
@@ -394,6 +415,19 @@
                 const input = htmlElement.querySelector('input')
                 const buttons = htmlElement.querySelectorAll('i')
                 const quantityText = htmlElement.querySelector('h6')
+
+                for(let i = 0; i < menu.length; i++)
+                {
+                    const current = menu[i]
+                    if(current.id === order.foodId)
+                    {
+                        order.price = current.price
+                        subtotal += current.price * order.quantity
+                        break
+                    }
+                }
+
+                renderSubtotal(subtotal)
 
                 if(order.status === 'ordered') {
                     buttons[0].onclick = () => {
