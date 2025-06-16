@@ -40,6 +40,7 @@ app.get('/dashboard', authorise, dashboardHandler)
 
 app.get('/order', authorise, newOrderHandler)
 app.get('/order/:orderId/:authorName', authorise, renderOrderHandler)
+app.get('/order/:orderId/:authorName/:bypass', authorise, renderOrderHandler)
 
 app.post('/order/pay/:orderId', authorise, renderPaymentHandler)
 app.post('/order/update/:orderId', authorise, updateOrderHandler)

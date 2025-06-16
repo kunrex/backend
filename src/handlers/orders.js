@@ -40,8 +40,9 @@ export function updateFoodTags(foodId, tags) {
 
 export async function renderOrderHandler(req, res) {
     const orderId = parseInt(req.params.orderId)
+    const bypass = req.params.bypass === 'true'
 
-    const rows = await runDBCommand(`SELECT ${users}.name AS authorName FROM ${orders}
+    const rows = await runDBCommand(`SELECT ${users}.name AS authorName, ${users}.email as authorEmail FROM ${orders}
                                             INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy
                                             WHERE ${orders}.id = ${escape(orderId)};`)
 
@@ -57,10 +58,15 @@ export async function renderOrderHandler(req, res) {
                                             INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
 
+    const block = req.user.email !== rows[0].authorEmail && !bypass
+
     if(acceptsJSON(req))
-        return res.status(200).send({
+        return block ? res.status(200).send({
             code: 200,
             orders: allSuborders
+        }) : res.sendStatus(500).send({
+            code: 500,
+            message: 'Bad Request: Cannot access orders that are not yours'
         })
 
     const tagValues = []
@@ -74,8 +80,8 @@ export async function renderOrderHandler(req, res) {
         orders: allSuborders,
         tags: tagValues,
         orderId: orderId,
-        completed: order.status === 'completed',
-        payed: order.payedBy != null
+        completed: block || order.status === 'completed',
+        payed: block || order.payedBy != null
     })
 }
 
