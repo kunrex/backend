@@ -6,9 +6,16 @@ import { between, access, refresh, return400Response, acceptsJSON, return40XResp
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function loginPageHandler(req, res) {
-    return res.render('login', {
-        error: undefined
-    })
+    const cookies = req.cookies
+    const accessCookie = cookies[access]
+    const refreshCookie = cookies[refresh]
+
+    if(accessCookie !== undefined && refreshCookie !== undefined)
+        return res.redirect('/dashboard')
+    else
+        return res.render('login', {
+            error: undefined
+        })
 }
 
 export function loginPageErrorHandler(req, res) {

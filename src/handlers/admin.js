@@ -173,6 +173,9 @@ export async function addFoodHandler(req, res) {
     if(!between(name.length, 1, 100))
         return return400Response(req, res, 'Bad Request: Name can have maximum 100 characters')
 
+    if((await runDBCommand(`SELECT 1 FROM ${foods} WHERE name = ${name}`)).length > 0)
+        return return400Response(req, res, 'Bad Request: Food with same name already exists')
+
     if(!between(description.length, 1, 300))
         return return400Response(req, res, 'Bad Request: Description can have maximum 300 characters')
 
