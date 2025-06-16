@@ -107,6 +107,10 @@
             strengthBar.style.width = (strength * 20) + '%'
         }
     </script>
+    <script>
+        if (<%- error != undefined %>)
+            history.replaceState(null, '', '/login')
+    </script>
     <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
