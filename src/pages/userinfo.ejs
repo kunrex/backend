@@ -48,12 +48,12 @@
                             </div>
                         </div>
                     <% } else { %>
-                        <div class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-center p-3">
+                        <div class="w-100 d-flex flex-column flex-md-row justify-content-evenly align-items-end p-3">
                             <div class="w-100 w-md-50 w-md-50 d-flex flex-column justify-content-evenly align-items-lg-baseline overflow-x-scroll no-wrap my-2 p-3">
                                 <h3> <%= user.name %> </h3>
                                 <h5> <%= user.email %> </h5>
                             </div>
-                            <div class="w-100 w-md-50 d-flex justify-content-evenly overflow-x-scroll no-wrap my-2">
+                            <div class="w-100 w-md-50 d-flex justify-content-evenly overflow-x-scroll no-wrap my-2 p-3">
                                 <% const auth = user.auth %>
                                 <span class="p-2 rounded-2 text-center text-dark-emphasis text-bg-dark fw-bold ms-1 me-1">Customer</span>
                                 <% if ((auth & 2) === 2) { %>

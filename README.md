@@ -22,6 +22,14 @@ DB_NAME=backend # !!Unchanged
 
 #### 2. Initialising the database
 
+In Mysql:
+
+```sql
+CREATE TABLE backend;
+```
+
+and then
+
 ```npm
 npm run initialise
 ```

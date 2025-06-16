@@ -19,8 +19,9 @@ try
             return
         }
 
-        const sql = fs.readFileSync(file, 'utf-8')
-        await runDBCommand(sql)
+        const commands = fs.readFileSync(file, 'utf-8').split(';')
+        for(let i = 0; i < commands.length - 1; i++)
+            await runDBCommand(commands[i].trim() + ';')
     }
 
     await init()
