@@ -5,8 +5,8 @@
   "scripts": {
     "start": "cd src && node app.js",
 
-    "initialise": "cd src && [ -f .env ] && node init/db_init.js db.sql",
-    "quickstart": "cd src && [ -f .env ] && node init/db_init.js quickstart/dump.sql && mv quickstart/foods/* assets/foods && node init/admin_init.js"
+    "initialise": "cd src && [ -f .env ] && node init/db_init.js db.sql && echo \"Database initialised\"",
+    "quickstart": "cd src && [ -f .env ] && node init/db_init.js quickstart/dump.sql && mv quickstart/foods/* assets/foods && node init/admin_init.js && echo \"Quickstart completed\""
   },
   "keywords": [],
   "author": "",

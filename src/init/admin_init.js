@@ -23,5 +23,3 @@ try
 catch (err) {
     console.log(`SQL Query Error: ${err.stack}`)
 }
-
-process.exit()
