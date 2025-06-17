@@ -158,14 +158,14 @@ export async function addFoodHandler(req, res) {
     if(body === undefined)
         return return400Response(req, res, 'Bad Request')
 
-    const name = body.name
+    const name = body.name.trim()
     const price = body.price
-    const description = body.description
+    const description = body.description.trim()
 
     const veg = body.veg
     const cookTime = body.cookTime
 
-    const imageURL = body.image
+    const imageURL = body.image.trim()
 
     if(typeof name !== 'string' || typeof price !== 'number' || typeof description !== 'string' || typeof veg !== 'boolean' || typeof cookTime !== 'string' || typeof imageURL !== 'string')
         return return400Response(req, res, 'Bad Request')
@@ -173,7 +173,7 @@ export async function addFoodHandler(req, res) {
     if(!between(name.length, 1, 100))
         return return400Response(req, res, 'Bad Request: Name can have maximum 100 characters')
 
-    if((await runDBCommand(`SELECT 1 FROM ${foods} WHERE name = ${name}`)).length > 0)
+    if((await runDBCommand(`SELECT 1 FROM ${foods} WHERE name = ${escape(name)}`)).length > 0)
         return return400Response(req, res, 'Bad Request: Food with same name already exists')
 
     if(!between(description.length, 1, 300))

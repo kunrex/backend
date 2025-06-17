@@ -85,15 +85,13 @@
         <script>
             const form = document.querySelector('form')
             const emailInput = document.getElementById('email')
+
+            const fetchError = document.getElementById('fetchError')
         </script>
         <script>
             form.onsubmit = (e) => {
                 e.preventDefault()
-
-                const email = emailInput.value.trim()
-
-                if(email)
-                    window.location.href = `/admin/userinfo/${email}`
+                window.location.href = `/admin/userinfo/${emailInput.value.trim()}`
             }
         </script>
     <% } else { %>

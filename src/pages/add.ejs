@@ -363,10 +363,10 @@
 
             const pad = n => String(n).padStart(2, '0');
 
-            await fetch('/admin/add/food', {
+            const result = await fetch('/admin/add/food', {
                 method: 'POST',
                 headers: {
-                    'Accept' : 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -381,7 +381,13 @@
                 })
             })
 
-            window.location.href = '/admin/add'
+            if(result.body.code === 200)
+                window.location.href = '/admin/add'
+            else
+            {
+                const body = await result.json()
+                addFoodError.innerHTML = body.error
+            }
         }
     </script>
     <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
