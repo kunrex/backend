@@ -100,6 +100,18 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
+    <script>
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        backgroundMusic.loop = true
+        backgroundMusic.volume =.2
+
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+    </script>
     <% if (allowJoin) { %>
         <script>
             const form = document.querySelector('form')

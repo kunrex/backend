@@ -209,6 +209,27 @@
         const addFoodError = document.getElementById('addFoodError')
     </script>
     <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
+    <script>
         const selectedTags = []
 
         function toggleTag(tag, button) {
@@ -224,6 +245,8 @@
                 selectedTags.splice(index, 1)
                 button.classList = 'btn text-warning fw-bold ms-1 me-1'
             }
+
+            clickSFX().then()
         }
 
         editTagItems.onchange = (e) => {
@@ -304,6 +327,8 @@
 
             addFoodVegetarian.className = 'btn text-success-emphasis text-bg-success fw-bold ms-1 me-1'
             addFoodNonVegetarian.className = 'btn text-danger fw-bold ms-1 me-1'
+
+            clickSFX().then()
         }
 
         function setNonVegetarian() {
@@ -311,6 +336,8 @@
 
             addFoodVegetarian.className = 'btn text-success fw-bold ms-1 me-1'
             addFoodNonVegetarian.className = 'btn text-danger-emphasis text-bg-danger fw-bold ms-1 me-1'
+
+            clickSFX().then()
         }
 
         let imageLoaded = false
@@ -318,6 +345,8 @@
         function fetchImage() {
             imageLoaded = false
             addFoodError.innerHTML = ''
+
+            clickSFX().then()
 
             const value = addFoodImageURL.value
             if(!value)

@@ -152,6 +152,27 @@
         const subtotalText = document.getElementById('subtotal')
     </script>
     <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
+    <script>
         tagChildren[0].onclick = () => {
             filter(tagChildren[0], 'all')
         }
@@ -195,6 +216,8 @@
                     enableChild(menuChildren[i])
                 else
                     disableChild(menuChildren[i])
+
+            clickSFX().then()
         }
     </script>
     <script>
@@ -329,6 +352,8 @@
 
             renderSubtotal(subtotal + item.price)
             orders[orders.length] = order
+
+            clickSFX().then()
         }
 
         function incrementOrder(order) {
@@ -341,6 +366,8 @@
             order.quantityText.style.color = 'black'
             order.decreaseButton.dataset.status = 'true'
             order.quantityText.innerHTML = order.quantity.toString()
+
+            clickSFX().then()
         }
 
         function decrementOrder(order) {
@@ -359,6 +386,8 @@
             }
 
             order.quantityText.innerHTML = order.quantity.toString()
+
+            clickSFX().then()
         }
 
         async function confirm() {

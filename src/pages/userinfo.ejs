@@ -81,6 +81,27 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
+    <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
     <% if (user === undefined) { %>
         <script>
             const form = document.querySelector('form')
@@ -109,6 +130,8 @@
                     button.classList = 'btn p-2 text-warning-emphasis text-bg-warning fw-bold ms-1 me-1'
                 else
                     button.classList = 'btn p-2 text-warning fw-bold ms-1 me-1'
+
+                clickSFX().then()
             }
 
             function setAdmin(button) {
@@ -118,6 +141,8 @@
                     button.classList = 'btn p-2 text-success-emphasis text-bg-success fw-bold ms-1 me-1'
                 else
                     button.classList = 'btn p-2 text-success fw-bold ms-1 me-1'
+
+                clickSFX().then()
             }
 
             async function confirm() {

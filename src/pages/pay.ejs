@@ -93,6 +93,27 @@
         buttons[0].style.border = 'solid thin black'
     </script>
     <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
+    <script>
         function setTip(button, value) {
             tip = value
             total = (subtotal + tip) * (100 - discount) / 100
@@ -103,6 +124,8 @@
                 buttons[i].style.border = ''
 
             button.style.border = 'solid thin black'
+
+            clickSFX().then()
         }
 
         payButton.onclick = async () => {

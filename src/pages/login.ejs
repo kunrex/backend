@@ -34,10 +34,10 @@
                 </div>
                 <ul class="nav nav-tabs w-100" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="home" aria-selected="true">Sign Up</button>
+                        <button onclick="clickSFX()" class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab" aria-controls="home" aria-selected="true">Sign Up</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="profile" aria-selected="false">Log In</button>
+                        <button onclick="clickSFX()" class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab" aria-controls="profile" aria-selected="false">Log In</button>
                     </li>
                 </ul>
                 <div class="tab-content w-100 d-flex justify-content-center p-3">
@@ -64,7 +64,7 @@
                             <%= error === undefined ? '' : error %>
                         </div>
                         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 gap-md-5">
-                            <button type="submit" name="action" value="signup" class="btn btn-primary btn-xl rounded-pill">Sign Up</button>
+                            <button onclick="clickSFX()" type="submit" name="action" value="signup" class="btn btn-primary btn-xl rounded-pill">Sign Up</button>
                         </div>
                     </form>
                     <form id="login" role="tabpanel" class="tab-pane fade w-100" action="/auth" method="POST">
@@ -84,7 +84,7 @@
                             <%= error === undefined ? '' : error %>
                         </div>
                         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 gap-md-5">
-                            <button type="submit" name="action" value="login" class="btn btn-primary btn-xl rounded-pill">Log In</button>
+                            <button onclick="clickSFX()" type="submit" name="action" value="login" class="btn btn-primary btn-xl rounded-pill">Log In</button>
                         </div>
                     </form>
                 </div>
@@ -100,6 +100,27 @@
 
         const strengthBar = document.getElementById('strength')
         const strengthText = document.getElementById('strengthText')
+    </script>
+    <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
     </script>
     <script>
         const colours = ['bg-danger', 'bg-danger', 'bg-warning', 'bg-success', 'bg-success']

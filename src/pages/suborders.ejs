@@ -91,6 +91,27 @@
         const confirmButton = document.getElementById('confirm')
     </script>
     <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
+    <script>
          function setProcessing(suborder) {
              const orderedButton = suborder.orderedButton
              orderedButton.disabled = true
@@ -101,6 +122,8 @@
 
              suborder.status = 'processing'
              suborder.state = 1
+
+             clickSFX().then()
          }
 
          function setComplete(suborder) {
@@ -117,6 +140,8 @@
 
              suborder.status = 'completed'
              suborder.state = 1
+
+             clickSFX().then()
          }
 
         function setUp() {

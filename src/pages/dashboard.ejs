@@ -21,9 +21,9 @@
                 <ul class="navbar-nav ms-auto g-3">
                     <% for (let i = 0; i < options.length; i++) { %>
                         <% const current = options[i] %>
-                        <li class="nav-item text-center"><a class="nav-link" href="#<%= current.name %>"><%= current.name %></a></li>
+                        <li class="nav-item text-center"><a onclick="clickSFX()" class="nav-link" href="#<%= current.name %>"><%= current.name %></a></li>
                     <% } %>
-                    <li class="nav-item text-bg-danger text-center"><a class="nav-link text-white" href="/signout">Sign Out</a></li>
+                    <li class="nav-item text-bg-danger text-center"><a onclick="clickSFX()" class="nav-link text-white" href="/signout">Sign Out</a></li>
                 </ul>
             </div>
         </div>
@@ -53,6 +53,27 @@
             </div>
         <% } %>
     </div>
+    <script>
+        const clickMusic = new Audio('/music/click.ogg')
+        const backgroundMusic = new Audio('/music/background.ogg')
+
+        clickMusic.loop = false
+        backgroundMusic.loop = true
+
+        clickMusic.volume = .8
+        backgroundMusic.volume =.2
+
+        clickMusic.pause()
+        try
+        {
+            backgroundMusic.play()
+        }
+        catch { }
+
+        async function clickSFX() {
+            await clickMusic.play()
+        }
+    </script>
     <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
