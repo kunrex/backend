@@ -4,15 +4,18 @@ import path from 'path'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-import { authMiddleware } from "./middleware/auth.js";
+import { authorise } from "./services/utils.js";
 
-import { authorise, authoriseAdmin, authoriseChef, return400Response } from "./services/utils.js";
-
+import { signOutHandler } from "./handlers/auth.js";
 import { dashboardHandler } from "./handlers/dashboard.js";
-import { renderOrderCheck , readonlyCheck } from "./middleware/orders.js";
-import { accessRefreshHandler, loginPageErrorHandler, loginPageHandler, signOutHandler } from "./handlers/auth.js";
-import { addFoodHandler, addTagHandler, editTagsHandler, renderAddHandler, renderUserInfoHandler, setUserAuthHandler } from "./handlers/admin.js";
-import { newOrderHandler, renderOrderHandler, completeOrderHandler, renderPaymentHandler, updateOrderHandler, confirmPaymentHandler, renderIncompleteSubordersHandler, updateSubordersStatusHandler, renderUserOrdersHandler, renderAllOrdersHandler } from "./handlers/orders.js";
+
+import { router as payRouter } from "./routes/pay.js";
+import { router as authRouter } from "./routes/auth.js";
+import { router as adminRouter } from "./routes/admin.js";
+import { router as loginRouter } from "./routes/login.js";
+import { router as orderRouter } from "./routes/order.js";
+import { router as ordersRouter } from "./routes/orders.js";
+import { router as suborderRouter } from "./routes/suborders.js";
 
 const __dirname = import.meta.dirname;
 
@@ -31,43 +34,19 @@ app.use('/bootstrap_css', express.static(path.join(__dirname, '../node_modules/b
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'pages'))
 
-app.get('/login', loginPageHandler)
-app.get('/login/:error', loginPageErrorHandler)
+app.use('/auth', authRouter)
+app.use('/login', loginRouter)
 
-app.post('/auth', authMiddleware)
-app.get('/auth/refresh', accessRefreshHandler)
+app.use('/pay', payRouter)
+app.use('/order', orderRouter)
+app.use('/orders', ordersRouter)
+app.use('/suborders', suborderRouter)
 
-app.get('/dashboard', authorise, dashboardHandler)
-
-app.get('/order', authorise, newOrderHandler)
-app.get('/order/readonly/:orderId', authorise, readonlyCheck, renderOrderHandler)
-app.get('/order/:orderId/:authorName', authorise, renderOrderCheck, renderOrderHandler)
-
-app.post('/order/pay/:orderId', authorise, renderPaymentHandler)
-app.post('/order/update/:orderId', authorise, updateOrderHandler)
-app.post('/order/complete/:orderId', authorise, completeOrderHandler)
-
-app.get('/pay/:orderId', authorise, renderPaymentHandler)
-app.post('/pay/confirm/:orderId', authorise, confirmPaymentHandler)
-
-app.get('/suborders', authorise, authoriseChef, renderIncompleteSubordersHandler)
-app.post('/suborders/update', authorise, authoriseChef, updateSubordersStatusHandler)
-
-app.get('/orders/my/', authorise, renderUserOrdersHandler)
-app.get('/orders/all/', authorise, authoriseAdmin, renderAllOrdersHandler)
-
-app.get('/admin/userinfo', authorise, authoriseAdmin, renderUserInfoHandler)
-app.get('/admin/userinfo/:email', authorise, authoriseAdmin, renderUserInfoHandler)
-
-app.post('/admin/grant/:email', authorise, authoriseAdmin, setUserAuthHandler)
-
-app.get('/admin/add', authorise, authoriseAdmin, renderAddHandler)
-
-app.post('/admin/add/food', authorise, authoriseAdmin, addFoodHandler)
-app.post('/admin/add/tags/add/:tag', authorise, authoriseAdmin, addTagHandler)
-app.post('/admin/add/tags/edit/:foodId', authorise, authoriseAdmin, editTagsHandler)
+app.use('/admin', adminRouter)
 
 app.get('/signout', authorise, signOutHandler)
+
+app.get('/dashboard', authorise, dashboardHandler)
 
 app.use((req, res) => {
     return res.redirect('/dashboard')

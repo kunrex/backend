@@ -25,6 +25,8 @@ export const menu = await runDBCommand(`SELECT ${foods}.*, IFNULL(GROUP_CONCAT($
                                             GROUP BY ${foods}.ID
                                             ORDER BY ${foods}.ID;`)
 
+console.log('hello')
+
 export function addTag(tag) {
     tags.push(tag)
 }
