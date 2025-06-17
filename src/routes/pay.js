@@ -6,6 +6,6 @@ import { confirmPaymentHandler, renderPaymentHandler } from "../handlers/orders.
 
 export const router = express.Router()
 
-router.get('/pay/:orderId', authorise, renderPaymentHandler)
-router.post('/pay/confirm/:orderId', authorise, confirmPaymentHandler)
+router.get('/:orderId', authorise, renderPaymentHandler)
+router.post('/confirm/:orderId', authorise, confirmPaymentHandler)
 
