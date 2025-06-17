@@ -24,27 +24,30 @@ export function loginPageErrorHandler(req, res) {
     })
 }
 
-function checks(req, res, body) {
-    if(!body.name)
-        return return400Response(req, res, 'Name cannot be empty')
+function checks(req, res, body, checkName) {
+    if(checkName)
+    {
+        if(!body.name)
+            return 'Name cannot be empty'
 
-    if(!between(body.name.length, 1, 100))
-        return return400Response(req, res, 'Name can be of max 100 characters')
+        if(!between(body.name.length, 1, 100))
+            return 'Name can be of max 100 characters'
+    }
 
     if(!body.email)
-        return return400Response(req, res, 'Email cannot be empty')
+        return 'Email cannot be empty'
 
     if(!emailRegex.test(body.email))
-        return return400Response(req, res, 'Email was invalid')
+        return 'Email was invalid'
 
     if(!between(body.email.length, 1, 255))
-        return return400Response(req, res, 'Email can be of max 255 characters')
+        return 'Email can be of max 255 characters'
 
     if(!body.password)
-        return return400Response(req, res, 'Password cannot be empty')
+        return 'Password cannot be empty'
 
     if(!between(body.email.length, 1, 50))
-        return return400Response(req, res, 'Password can be of max 50 characters')
+        return 'Password can be of max 50 characters'
 
     return null
 }
@@ -65,9 +68,11 @@ function newAccessToken(email, auth) {
 export async function signUpHandler(req, res) {
     const body = req.body;
 
-    const result = checks(req, res, body);
-    if(result)
-        return result
+    const result = checks(req, res, body, true);
+    if(result != null)
+        return return400Response(req, res, result)
+
+    console.log(result)
 
     const email = body.email
 
@@ -99,9 +104,9 @@ export async function signUpHandler(req, res) {
 export async function loginHandler(req, res) {
     const body = req.body;
 
-    const result = checks(req, res, body);
-    if(result)
-        return result
+    const result = checks(req, res, body, false);
+    if(result != null)
+        return return400Response(req, res, result)
 
     const email = body.email
 

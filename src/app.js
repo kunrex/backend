@@ -70,7 +70,7 @@ app.post('/admin/add/tags/edit/:foodId', authorise, authoriseAdmin, editTagsHand
 app.get('/signout', authorise, signOutHandler)
 
 app.use((req, res) => {
-    return return400Response(req, res, 'Bad Request: Path not found')
+    return res.redirect('/dashboard')
 })
 
 app.use((err, req, res, next) => {
