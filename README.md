@@ -50,3 +50,5 @@ npm run quickstart
 > Alternative: Run `src/quickstart/dump.sql` locally using your MySQL credentials, move all images from `src/quickstart/foods` to `src/assets/foods` and run a DB command to grant `auth = 7` for a user of of choice.
 
 #### 4. Enjoy :D
+
+> Credits: background music: <a href="https://mixkit.co/free-stock-music/">Serene View</a>
