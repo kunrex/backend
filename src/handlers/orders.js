@@ -39,26 +39,13 @@ export function updateFoodTags(foodId, tags) {
 }
 
 export async function renderOrderHandler(req, res) {
-    const orderId = parseInt(req.params.orderId)
-    const bypass = req.params.bypass === 'true'
-
-    const rows = await runDBCommand(`SELECT ${users}.name AS authorName, ${users}.email as authorEmail FROM ${orders}
-                                            INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy
-                                            WHERE ${orders}.id = ${escape(orderId)};`)
-
-    if(rows.length !== 1)
-        return return400Response(req, res, 'Bad Request: Order not found')
-
-    const authorName = req.params.authorName
-    if(rows[0].authorName !== authorName)
-        return return400Response(req, res, 'Bad Request: Order creator did not match provided author name')
+    const orderId = req.orderId
+    const readonly = req.readonly
 
     const allSuborders = await runDBCommand(`SELECT ${suborders}.*, ${foods}.name, ${users}.name AS authorName FROM ${suborders} 
                                             INNER JOIN ${foods} ON ${suborders}.foodId = ${foods}.id
                                             INNER JOIN ${users} ON ${suborders}.authorId = ${users}.id
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
-
-    const block = req.user.email !== rows[0].authorEmail && !bypass
 
     if(acceptsJSON(req))
         return block ? res.status(200).send({
@@ -80,8 +67,8 @@ export async function renderOrderHandler(req, res) {
         orders: allSuborders,
         tags: tagValues,
         orderId: orderId,
-        completed: block || order.status === 'completed',
-        payed: block || order.payedBy != null
+        completed: readonly || order.status === 'completed',
+        payed: readonly || order.payedBy != null
     })
 }
 

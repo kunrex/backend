@@ -9,6 +9,7 @@ import { authMiddleware } from "./middleware/auth.js";
 import { authorise, authoriseAdmin, authoriseChef, return400Response } from "./services/utils.js";
 
 import { dashboardHandler } from "./handlers/dashboard.js";
+import { renderOrderCheck , readonlyCheck } from "./middleware/orders.js";
 import { accessRefreshHandler, loginPageErrorHandler, loginPageHandler, signOutHandler } from "./handlers/auth.js";
 import { addFoodHandler, addTagHandler, editTagsHandler, renderAddHandler, renderUserInfoHandler, setUserAuthHandler } from "./handlers/admin.js";
 import { newOrderHandler, renderOrderHandler, completeOrderHandler, renderPaymentHandler, updateOrderHandler, confirmPaymentHandler, renderIncompleteSubordersHandler, updateSubordersStatusHandler, renderUserOrdersHandler, renderAllOrdersHandler } from "./handlers/orders.js";
@@ -39,8 +40,8 @@ app.get('/auth/refresh', accessRefreshHandler)
 app.get('/dashboard', authorise, dashboardHandler)
 
 app.get('/order', authorise, newOrderHandler)
-app.get('/order/:orderId/:authorName', authorise, renderOrderHandler)
-app.get('/order/:orderId/:authorName/:bypass', authorise, renderOrderHandler)
+app.get('/order/readonly/:orderId', authorise, readonlyCheck, renderOrderHandler)
+app.get('/order/:orderId/:authorName', authorise, renderOrderCheck, renderOrderHandler)
 
 app.post('/order/pay/:orderId', authorise, renderPaymentHandler)
 app.post('/order/update/:orderId', authorise, updateOrderHandler)

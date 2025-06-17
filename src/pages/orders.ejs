@@ -56,7 +56,11 @@
                                                 <% } %>
                                             </div>
                                             <div class="w-50 text-end">
-                                                <button onclick="window.location.href = '/order/<%= current.id %>/<%= current.authorName %>'" class="btn text-primary-emphasis text-bg-primary fw-bold ms-1 me-1">Show</button>
+                                                <% if (allowJoin) { %>
+                                                    <button onclick="window.location.href = '/order/<%= current.id %>/<%= current.authorName %>'" class="btn text-primary-emphasis text-bg-primary fw-bold ms-1 me-1">Show</button>
+                                                <% } else { %>
+                                                    <button onclick="window.location.href = '/order/readonly/<%= current.id %>'" class="btn text-primary-emphasis text-bg-primary fw-bold ms-1 me-1">Show</button>
+                                                <% } %>
                                             </div>
                                         </div>
                                     </div>
@@ -96,22 +100,24 @@
         <div class="bg-circle-3 bg-circle bobble-effect-6"></div>
         <div class="bg-circle-4 bg-circle bobble-effect-4"></div>
     </header>
-    <script>
-        const form = document.querySelector('form')
+    <% if (allowJoin) { %>
+        <script>
+            const form = document.querySelector('form')
 
-        const idInput = document.getElementById('id')
-        const authorInput = document.getElementById('author')
+            const idInput = document.getElementById('id')
+            const authorInput = document.getElementById('author')
 
-        form.onsubmit = (e) => {
-            e.preventDefault()
+            form.onsubmit = (e) => {
+                e.preventDefault()
 
-            const id = parseInt(idInput.value.trim())
-            const author = authorInput.value.trim()
+                const id = parseInt(idInput.value.trim())
+                const author = authorInput.value.trim()
 
-            if(id > 0 && author)
-                window.location.href = `/order/${id}/${author}/true`
-        }
-    </script>
+                if(id > 0 && author)
+                    window.location.href = `/order/${id}/${author}`
+            }
+        </script>
+    <% } %>
     <script type="module" src="/bootstrap_js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
