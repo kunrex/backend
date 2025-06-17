@@ -213,6 +213,8 @@ export async function addFoodHandler(req, res) {
         cookTime: cookTime,
         price: price,
 
-        image: path
+        image: relativePath
     })
+
+    return res.sendStatus(200)
 }
