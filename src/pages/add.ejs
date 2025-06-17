@@ -384,6 +384,12 @@
                 return
             }
 
+            if(!parseInt(hours) && !parseInt(minutes) && !parseInt(seconds))
+            {
+                addFoodError.innerHTML = "Please enter a time, make sure to fill hours, minutes and seconds"
+                return
+            }
+
             if(!imageLoaded)
             {
                 addFoodError.innerHTML = "No image loaded"
