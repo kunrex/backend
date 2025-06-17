@@ -10,7 +10,7 @@ export function loginPageHandler(req, res) {
     const accessCookie = cookies[access]
     const refreshCookie = cookies[refresh]
 
-    if(accessCookie !== undefined && refreshCookie !== undefined)
+    if(accessCookie !== 'undefined' && refreshCookie !== 'undefined')
         return res.redirect('/dashboard')
     else
         return res.render('login', {

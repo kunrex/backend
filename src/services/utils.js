@@ -54,7 +54,7 @@ async function authoriseCookies(req, res, next) {
     const accessCookie = cookies[access]
     const refreshCookie = cookies[refresh]
 
-    if(accessCookie === undefined || refreshCookie === undefined)
+    if(accessCookie === 'undefined' || refreshCookie === 'undefined')
         return return40XResponse(401, req, res, 'Failed to authorise, please Sign Up if you dont have an account or Log In again if you do')
 
     const accessPayload = verifyToken(accessCookie)
