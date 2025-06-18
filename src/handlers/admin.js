@@ -27,7 +27,7 @@ export async function renderUserInfoHandler(req, res) {
         if(rows.length !== 1)
             return res.render('userinfo', {
                 user: undefined,
-                error: 'No use with email found'
+                error: 'No user with email found'
             })
 
         return res.render('userinfo', {
