@@ -12,19 +12,27 @@ export async function renderUserInfoHandler(req, res) {
     const email = req.params.email
     if(email === undefined) {
         return res.render('userinfo', {
-            user: undefined
+            user: undefined,
+            error: undefined
         })
     }
     else {
         if(!emailRegex.test(email))
-            return return400Response(req, res, 'Email was invalid')
+            return res.render('userinfo', {
+                user: undefined,
+                error: 'Email was invalid'
+            })
 
         const rows = await runDBCommand(`SELECT name, email, auth FROM ${users} WHERE email = ${escape(email)};`)
         if(rows.length !== 1)
-            return return400Response(req, res, 'Email was invalid')
+            return res.render('userinfo', {
+                user: undefined,
+                error: 'No use with email found'
+            })
 
         return res.render('userinfo', {
-            user: rows[0]
+            user: rows[0],
+            error: undefined
         })
     }
 }
@@ -213,6 +221,7 @@ export async function addFoodHandler(req, res) {
         cookTime: cookTime,
         price: price,
 
+        tags: '',
         image: relativePath
     })
 

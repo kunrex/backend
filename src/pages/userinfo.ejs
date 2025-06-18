@@ -43,6 +43,11 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary text-primary-emphasis text-bg-primary btn-lg rounded-pill">Fetch User</button>
                             </form>
+                            <div class="w-100 text-danger">
+                                <span class="text-danger">
+                                     <%= error === undefined ? '' : error %>
+                                </span>
+                            </div>
                             <div class="w-100 text-center">
                                 <button onclick="window.location.href = '/dashboard'" class="btn btn-primary text-primary-emphasis text-bg-primary btn-xl rounded-pill">Cancel</button>
                             </div>
@@ -106,8 +111,6 @@
         <script>
             const form = document.querySelector('form')
             const emailInput = document.getElementById('email')
-
-            const fetchError = document.getElementById('fetchError')
         </script>
         <script>
             form.onsubmit = (e) => {
