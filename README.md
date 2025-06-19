@@ -26,7 +26,7 @@ DB_NAME=backend # !!Unchanged
 npm run sassinit
 ```
 
-> Alternative: Precompile scss files in `node_modules/startbootstrap-one-page-wonder` to `src/template.css` (this file must be created first)
+> Alternative: Precompile scss files in `node_modules/startbootstrap-one-page-wonder` to `src/assets/template.css` (this file must be created first)
 
 #### 3. Initialising the database
 
