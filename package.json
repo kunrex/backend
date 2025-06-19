@@ -5,6 +5,8 @@
   "scripts": {
     "start": "cd src && node app.js",
 
+    "sassinit" : "touch src/assets/template.css && npx sass --load-path=node_modules node_modules/startbootstrap-one-page-wonder/src/scss/styles.scss src/assets/template.css",
+
     "initialise": "cd src && [ -f .env ] && node init/db_init.js db.sql && echo \"Database initialised\"",
     "quickstart": "cd src && [ -f .env ] && node init/db_init.js quickstart/dump.sql && mv quickstart/foods/* assets/foods && node init/admin_init.js && echo \"Quickstart completed\""
   },
@@ -22,6 +24,10 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.14.1"
+    "mysql2": "^3.14.1",
+    "startbootstrap-one-page-wonder": "^6.0.6"
+  },
+  "devDependencies": {
+    "sass": "^1.89.2"
   }
 }

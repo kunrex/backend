@@ -20,7 +20,15 @@ DB_PASSWORD=superhardpasswordtoguess123456789$%^&*
 DB_NAME=backend # !!Unchanged
 ```
 
-#### 2. Initialising the database
+#### 2. Initialising Bootstrap themes
+
+```npm
+npm run sassinit
+```
+
+> Alternative: Precompile scss files in `node_modules/startbootstrap-one-page-wonder` to `src/template.css` (this file must be created first)
+
+#### 3. Initialising the database
 
 In Mysql:
 
@@ -36,7 +44,7 @@ npm run initialise
 
 > Alternative: Run `src/db.sql` locally using your MySQL credentials
 
-#### 3. (Optional) Quickstart
+#### 4. (Optional) Quickstart
 
 ```npm
 npm run quickstart
@@ -49,6 +57,6 @@ npm run quickstart
 
 > Alternative: Run `src/quickstart/dump.sql` locally using your MySQL credentials, move all images from `src/quickstart/foods` to `src/assets/foods` and run a DB command to grant `auth = 7` for a user of of choice.
 
-#### 4. Enjoy :D
+#### 5. Enjoy :D
 
 > Credits: background music: <a href="https://mixkit.co/free-stock-music/">Serene View</a>

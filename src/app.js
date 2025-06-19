@@ -29,7 +29,6 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(express.static(path.join(__dirname, 'assets')))
 app.use('/bootstrap_js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')))
-app.use('/bootstrap_css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')))
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'pages'))
@@ -61,5 +60,5 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`App listening on port ${port}`)
 })

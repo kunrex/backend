@@ -2,6 +2,9 @@ src/.env
 .idea/
 node_modules/
 
+src/assets/template.css
+src/assets/template.css.map
+
 src/assets/foods/*
 
 !src/assets/foods/.gitkeep
