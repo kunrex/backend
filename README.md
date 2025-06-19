@@ -20,6 +20,8 @@ DB_PASSWORD=superhardpasswordtoguess123456789$%^&*
 DB_NAME=backend # !!Unchanged
 ```
 
+> NOTE: the npm commands are set to run on UNIX (like) operating systems (im sorry windows D:)
+
 #### 2. Initialising Bootstrap themes
 
 ```npm
@@ -55,7 +57,7 @@ npm run quickstart
 > 2. Email: admin@backend.com
 > 3. Password: adminpassword123
 
-> Alternative: Run `src/quickstart/dump.sql` locally using your MySQL credentials, move all images from `src/quickstart/foods` to `src/assets/foods` and run a DB command to grant `auth = 7` for a user of of choice.
+> Alternative: Run `src/quickstart/dump.sql` locally using your MySQL credentials, move all images from `src/quickstart/foods` to `src/assets/foods` and run a DB command to grant `auth = 7` for a user of choice.
 
 #### 5. Enjoy :D
 
