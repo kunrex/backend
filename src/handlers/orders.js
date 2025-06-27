@@ -62,7 +62,7 @@ export async function renderOrderHandler(req, res) {
     const order = (await runDBCommand(`SELECT * FROM ${orders} WHERE id = ${orderId};`))[0]
 
     const user = req.user
-    if(order.createdBy !== user.id && (await runDBCommand(`SELECT 1 FROM ${orderRelations} WHERE userId = ${escape(user.id)} AND orderId = ${orderId};`)).length === 0)
+    if(!readonly && order.createdBy !== user.id && (await runDBCommand(`SELECT 1 FROM ${orderRelations} WHERE userId = ${escape(user.id)} AND orderId = ${orderId};`)).length === 0)
         await runDBCommand(`INSERT INTO ${orderRelations} (userId, orderId) VALUES (${escape(user.id)}, ${escape(orderId)});`)
 
     return res.render('order', {
