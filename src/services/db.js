@@ -11,6 +11,7 @@ export const foodTagRelations = "FoodTagRelations"
 
 export const orders = "Orders"
 export const suborders = "Suborders"
+export const orderRelations = "OrderRelations"
 
 export const ordered = "ordered"
 export const completed = "completed"

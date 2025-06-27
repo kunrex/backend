@@ -1,5 +1,5 @@
 import { return400Response } from "../services/utils.js";
-import { escape, orders, runDBCommand, users } from "../services/db.js";
+import {escape, orderRelations, orders, runDBCommand, users} from "../services/db.js";
 
 export async function renderOrderCheck(req, res, next) {
     const orderId = parseInt(req.params.orderId)
@@ -12,7 +12,7 @@ export async function renderOrderCheck(req, res, next) {
         return return400Response(req, res, 'Bad Request: Order not found')
 
     const authorName = req.params.authorName
-    if(rows[0].authorName !== authorName)
+    if(rows[0].authorName !== authorName && (await runDBCommand(`SELECT 1 FROM ${orderRelations} WHERE userId = ${req.user.id} AND orderId = ${escape(orderId)};`)).length === 0)
         return return400Response(req, res, 'Bad Request: Order creator did not match provided author name')
 
     req.orderId = orderId

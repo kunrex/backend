@@ -1,5 +1,5 @@
 import { between, now, return400Response, acceptsJSON } from "../services/utils.js";
-import { runDBCommand, escape, orders, foodTags, foods, foodTagRelations, suborders, ordered, completed, users, processing } from "../services/db.js";
+import { runDBCommand, escape, orders, foodTags, foods, foodTagRelations, suborders, ordered, completed, users, processing, orderRelations } from "../services/db.js";
 
 export async function newOrderHandler(req, res) {
     const user = req.user
@@ -13,6 +13,8 @@ export async function newOrderHandler(req, res) {
         ${escape('ordered')},
         ${escape(now())}
     );`)
+
+    await runDBCommand(`INSERT INTO ${orderRelations} (userId, orderId) VALUES (${escape(user.id)}, ${escape(result.insertId)});`)
 
     return res.redirect(`/order/${result.insertId}/${req.user.name}`)
 }
@@ -48,12 +50,9 @@ export async function renderOrderHandler(req, res) {
                                             WHERE ${suborders}.orderId = ${escape(orderId)};`)
 
     if(acceptsJSON(req))
-        return block ? res.status(200).send({
+        return res.status(200).send({
             code: 200,
             orders: allSuborders
-        }) : res.sendStatus(500).send({
-            code: 500,
-            message: 'Bad Request: Cannot access orders that are not yours'
         })
 
     const tagValues = []
@@ -61,6 +60,10 @@ export async function renderOrderHandler(req, res) {
         tagValues.push(tags[i].name)
 
     const order = (await runDBCommand(`SELECT * FROM ${orders} WHERE id = ${orderId};`))[0]
+
+    const user = req.user
+    if(order.createdBy !== user.id && (await runDBCommand(`SELECT 1 FROM ${orderRelations} WHERE userId = ${escape(user.id)} AND orderId = ${orderId};`)).length === 0)
+        await runDBCommand(`INSERT INTO ${orderRelations} (userId, orderId) VALUES (${escape(user.id)}, ${escape(orderId)});`)
 
     return res.render('order', {
         menu: menu,
@@ -305,7 +308,9 @@ export async function renderAllOrdersHandler(req, res) {
 }
 
 export async function renderUserOrdersHandler(req, res) {
-    const allOrders = await runDBCommand(`SELECT id, createdOn, ${escape(req.user.name)} AS authorName, status FROM ${orders} WHERE createdBy = ${escape(req.user.id)};`)
+    const allOrders = await runDBCommand(`SELECT ${orders}.id, ${orders}.createdOn, ${escape(req.user.name)} AS authorName, ${orders}.status FROM ${orders}
+                                            INNER JOIN ${orderRelations} ON ${orderRelations}.orderId = ${orders}.Id 
+                                            WHERE ${orderRelations}.userId = ${escape(req.user.id)};`)
 
     return res.render('orders', {
         allowJoin: true,
