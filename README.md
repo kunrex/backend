@@ -4,7 +4,7 @@ Submission to backend assignment
 
 #### 1. Create the .env file
 
-Rename `src/exmaple.env` to `.env` and fill in the appropriate values. 
+Rename `src/exmaple.env` to `src/.env` and fill in the appropriate values. 
 
 An example:
 ```env
@@ -35,7 +35,7 @@ npm run sassinit
 In Mysql:
 
 ```sql
-CREATE TABLE backend;
+CREATE DATABASE backend;
 ```
 
 and then
