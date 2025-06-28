@@ -294,7 +294,7 @@ export async function updateSubordersStatusHandler(req, res) {
 }
 
 export async function renderAllOrdersHandler(req, res) {
-    const allOrders = await runDBCommand(`SELECT ${orders}.id, ${orders}.createdOn, ${users}.name AS authorName, ${orders}.status FROM ${orders}
+    const allOrders = await runDBCommand(`SELECT ${orders}.id, DATE_ADD(${orders}.createdOn, INTERVAL 330 MINUTE) AS createdOn, ${users}.name AS authorName, ${orders}.status FROM ${orders}
                                                  INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy;`)
 
     return res.render('orders', {
