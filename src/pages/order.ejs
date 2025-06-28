@@ -489,6 +489,11 @@
                     buttons[1].dataset.status = 'false'
 
                     order.state = 3
+
+                    if(order.status === 'processing') {
+                        payButton.disabled = true
+                        completeButton.disabled = true
+                    }
                 }
             }
         }

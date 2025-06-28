@@ -304,7 +304,7 @@ export async function renderAllOrdersHandler(req, res) {
 }
 
 export async function renderUserOrdersHandler(req, res) {
-    const allOrders = await runDBCommand(`SELECT ${orders}.id, ${orders}.createdOn, ${users}.name AS authorName, ${orders}.status FROM ${orders}
+    const allOrders = await runDBCommand(`SELECT ${orders}.id, DATE_ADD(${orders}.createdOn, INTERVAL 330 MINUTE) AS createdOn, ${users}.name AS authorName, ${orders}.status FROM ${orders}
                                             INNER JOIN ${orderRelations} ON ${orderRelations}.orderId = ${orders}.Id 
                                             INNER JOIN ${users} ON ${users}.id = ${orders}.createdBy
                                             WHERE ${orderRelations}.userId = ${escape(req.user.id)};`)
